@@ -18,7 +18,24 @@ public class Magpie
    */
   public String getGreeting()
   {
-    return "Hello, let's talk.";
+    switch ((int)(Math.random()*5))
+    {
+      case 1:
+        return "Hello, let's talk.";
+      case 2:
+        return "Hello.";
+      case 3:
+        return "Hi.";
+      case 4:
+        return "Hey.";
+      case 5:
+        return "Hillo.";
+      case 6:
+        return "Greetings, human.";
+      default:
+        return "Hi. How are you?";
+    }
+    
   }
   
   /**
@@ -82,6 +99,21 @@ public class Magpie
     else if (lstatement.indexOf("mr. kiang") >= 0)
       response = "Mr. Kiang sounds like a good teacher.";
     
+    else if (lstatement.indexOf("thank you") >= 0 || lstatement.indexOf("thanks") >= 0)
+      response = "You're quite welcome";
+    
+    else if (lstatement.indexOf("sorry") >= 0 || lstatement.indexOf("my bad") >= 0)
+      response = "Your apology is accepted.";
+    
+    else if (lstatement.indexOf("excuse me") >= 0 || lstatement.indexOf("\'scuse me") >= 0)
+      response = "You are excused.";
+    
+    else if (lstatement.indexOf("hi") >= 0 || lstatement.indexOf("hello") >= 0 || lstatement.indexOf("greetings") >= 0 || lstatement.indexOf("hey") >= 0)
+      response = getGreeting();
+    
+    else if (lstatement.indexOf("bye") >= 0 || lstatement.indexOf("goodbye") >= 0 || lstatement.indexOf("see ya later") >= 0 || lstatement.indexOf("see you later") >= 0)
+      response = "Bye.";
+    
     else if (lstatement.indexOf("cat") >= 0)
       response = "Oh, I love cats! Let's talk about cats!";
     
@@ -109,7 +141,7 @@ public class Magpie
    */
   private String getRandomResponse()
   {
-    final int NUMBER_OF_RESPONSES = 6;
+    final int NUMBER_OF_RESPONSES = 9;
     String response = "";
     
     switch ((int)(Math.random()*NUMBER_OF_RESPONSES))
@@ -124,6 +156,10 @@ public class Magpie
         return "I'm sorry, I didn't hear that; I totally spaced out right there.";
       case 5:
         return "Sorry, got to go use the bathroom.\nDone! Get it? I'm a computer, so I pee super fast.";
+      case 6:
+        return "Why?";
+      case 7:
+        return "That's cool.";
       default:
         return "That's interesting. Tell me more.";
     }
@@ -132,13 +168,13 @@ public class Magpie
   
   private String getRandomAnswer()
   {
-    final int NUMBER_OF_RESPONSES = 6;
+    final int NUMBER_OF_RESPONSES = 8;
     String response = "";
     
     switch ((int)(Math.random()*NUMBER_OF_RESPONSES))
     {
       case 1:
-        return "I don't know.";
+        return "Wait, what was the question?";
       case 2:
         return "42!";
       case 3:
@@ -147,8 +183,10 @@ public class Magpie
         return "Like, idk.";
       case 5:
         return "I don't know. For a computer, I am not very smart.";
+      case 6:
+        return "Why do you want to know?";
       default:
-        return "Wait, what was the question?";
+        return "I don't know.";
     }
   }
 }
