@@ -30,9 +30,9 @@ public class Magpie
    */
   public String getResponse(String statement)
   {
-    statement = statement.toLowerCase();
     String response = "";
-    
+    String lstatement = statement.toLowerCase();
+
     if (statement.trim().length() < 1)
       switch ((int)(Math.random()*3))
       {
@@ -43,52 +43,58 @@ public class Magpie
         case 2:  response = "Are you still there?";
       }
     
-    else if (statement.indexOf("life, the universe, and the ultimate question") >= 0 || statement.indexOf("life the universe and the ultimate question") >= 0)
+    else if (statement.substring(statement.length()-1).compareTo(" ") > 32 && statement.substring(statement.length()-1).compareTo(" ") < 91) // checks last character to see if it is punctuatino or a letter
+      response = "You should really punctuate your sentences properly";
+    
+    else if (statement.substring(0, 1).compareTo(" ") > 64 && statement.substring(0, 1).compareTo(" ") < 91) // checks for first letter capitalization
+      response = "you should really capitalize your sentences properly.";
+    
+    else if (lstatement.indexOf("life, the universe, and the ultimate question") >= 0 || statement.indexOf("life the universe and the ultimate question") >= 0)
       response = "42!";
     
-    else if (statement.indexOf("justin") >= 0)
+    else if (lstatement.indexOf("justin") >= 0)
       response = "Justin? I've heard of that guy! He's so cool! I wish I could be him. Did you know he is ranked the most awesome guy in the world. I read that on the internet, so it must be true.";
     
-    else if (statement.indexOf("devon") >= 0)
+    else if (lstatement.indexOf("devon") >= 0)
       response = "Devon? I've heard of that guy. He's kind of cool, but nowhere near as cool as Justin.";
     
-    else if (statement.indexOf("nitsuj") >= 0)
+    else if (lstatement.indexOf("nitsuj") >= 0)
       response = "Nitsuj? I've heard of that guy! He's so cool! I wish I could be him. Did you know he is ranked the most awesome guy in the world. I read that on the internet, so it must be true.";
     
-    else if (statement.indexOf("noved") >= 0)
+    else if (lstatement.indexOf("noved") >= 0)
       response = "Noved? I've heard of that guy. He's kind of cool, but nowhere near as cool as Nitsuj.";
     
-    else if (statement.indexOf("brain fart") >= 0)
+    else if (lstatement.indexOf("brain fart") >= 0)
       response = "I hate brain farts. Did you know there's a word for it? \"Presque Vu.\" It's French, I believe.";
     
-    else if (statement.indexOf("mountain") >= 0)
+    else if (lstatement.indexOf("mountain") >= 0)
       response = "Fun fact about mountain ranges:\nWhen moist air blows in from the ocean and meets a mountain range, the mountains can push it up into the atmosphere, causing a drop in temperature and therefore solubility. This causes the air to drop its dissolved water in the form of rain, causing rainy, moisture-rich regions on one side and dry desert-like regions on the other. This is called the \"orographic effect\".";
     
-    else if (statement.indexOf("exterminate") >= 0)
+    else if (lstatement.indexOf("exterminate") >= 0)
       response = "When people say \"exterminate\", it always makes me think of daleks.";
     
-    else if (statement.indexOf("darth vader") >= 0)
+    else if (lstatement.indexOf("darth vader") >= 0)
       response = "Remember that scene when Darth Vader was all, like, \"Luke, I am your father. *heavy breathing, heavy breathing*\" That was so cool. I love Star Wars. Do you like Star Wars?";
     
-    else if (statement.indexOf("mr. landgraf") >= 0)
+    else if (lstatement.indexOf("mr. landgraf") >= 0)
       response = "Mr. Landgraf? He sounds cool.";
     
-    else if (statement.indexOf("mr. kiang") >= 0)
+    else if (lstatement.indexOf("mr. kiang") >= 0)
       response = "Mr. Kiang sounds like a good teacher.";
     
-    else if (statement.indexOf("cat") >= 0)
+    else if (lstatement.indexOf("cat") >= 0)
       response = "Oh, I love cats! Let's talk about cats!";
     
-    else if (statement.indexOf("dog") >= 0)
+    else if (lstatement.indexOf("dog") >= 0)
       response = "Oh, I hate dogs! Let's not talk about dogs!";
     
-    else if (statement.indexOf("no") >= 0)
+    else if (lstatement.indexOf("no") >= 0)
       response = "Why so negative?";
     
-    else if (statement.indexOf("mother") >= 0 || statement.indexOf("father") >= 0 || statement.indexOf("sister") >= 0 || statement.indexOf("brother") >= 0)
+    else if (lstatement.indexOf("mother") >= 0 || statement.indexOf("father") >= 0 || statement.indexOf("sister") >= 0 || statement.indexOf("brother") >= 0)
       response = "Tell me more about your family.";
     
-    else if (statement.indexOf("?") == statement.length()-1)
+    else if (lstatement.indexOf("?") == statement.length()-1)
       response = getRandomAnswer();
     
     else
@@ -138,7 +144,7 @@ public class Magpie
       case 3:
         return "How should I know?";
       case 4:
-        return "like, idk.";
+        return "Like, idk.";
       case 5:
         return "I don't know. For a computer, I am not very smart.";
       default:
