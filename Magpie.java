@@ -18,7 +18,7 @@ public class Magpie
    */
   public String getGreeting()
   {
-    switch ((int)(Math.random()*5))
+    switch ((int)(Math.random()*7))
     {
       case 1:
         return "Hello, let's talk.";
@@ -49,9 +49,14 @@ public class Magpie
   {
     String response = "";
     statement = statement.trim();
-    String lstatement = statement.toLowerCase();
-    
-    
+    String lstatement = statement.toLowerCase(); // I edit "lstatement" before processing, but I keep "statement" as the original statement verbatim
+    lstatement = replace("you", "MEPLACEHOLDER", lstatement); // changes all the pronouns
+    lstatement = replace("i", "you", lstatement);
+    lstatement = replace("me", "you", lstatement);
+    lstatement = replace("MEPLACEHOLDER", "me", lstatement);
+    lstatement = replace("your", "MYPLACEHOLDER", lstatement);
+    lstatement = replace("my", "your", lstatement);
+    lstatement = replace("MYPLACEHOLDER", "my", lstatement);
 
     if (lstatement.length() < 1)
       switch ((int)(Math.random()*3))
@@ -69,17 +74,17 @@ public class Magpie
     else if (statement.substring(0, 1).compareTo(" ") > 64 && statement.substring(0, 1).compareTo(" ") < 91) // checks for first letter capitalization
       response = "you should really capitalize your sentences properly.";
     
-    else if (find("want to", lstatement)>=0)
-      response = "Well, then go"+statement.substring(find("want to", lstatement)+7, statement.length()-1)+"!";
+    else if (find("you want to", lstatement)>=0)
+      response = "Well, then go"+statement.substring(find("you want to", lstatement)+9, statement.length()-1)+"!";
     
-    else if (find("want", lstatement)>=0)
-      response = "I wish I could give you"+statement.substring(find("want", lstatement)+4, statement.length()-1)+", but I am merely a computer.";
+    else if (find("you want", lstatement)>=0)
+      response = "I wish I could give you"+statement.substring(find("you want", lstatement)+6, statement.length()-1)+", but I am merely a computer.";
     
-    else if (find("like to", lstatement)>=0)
-      response = "I like to"+statement.substring(find("like to", lstatement)+7, statement.length()-1)+", too!";
+    else if (find("you like to", lstatement)>=0)
+      response = "I like to"+statement.substring(find("you like to", lstatement)+9, statement.length()-1)+", too!";
     
-    else if (find("like", lstatement)>=0)
-      response = "What do you like about"+statement.substring(find("like", lstatement)+4, statement.length()-1)+"?";
+    else if (find("you like", lstatement)>=0)
+      response = "What do you like about"+statement.substring(find("you like", lstatement)+6, statement.length()-1)+"?";
     
     else if (find("life, the universe, and the ultimate question", lstatement)>=0 || find("life the universe and the ultimate question", lstatement)>=0)
       response = "42!";
@@ -114,13 +119,13 @@ public class Magpie
     else if (find("mr. kiang", lstatement)>=0)
       response = "Mr. Kiang sounds like a good teacher.";
     
-    else if (find("thank you", lstatement)>=0 || find("thanks", lstatement)>=0)
+    else if (find("thank me", lstatement)>=0 || find("thanks", lstatement)>=0)
       response = "You're quite welcome";
     
-    else if (find("sorry", lstatement)>=0 || find("my bad", lstatement)>=0)
+    else if (find("sorry", lstatement)>=0 || find("your bad", lstatement)>=0)
       response = "Your apology is accepted.";
     
-    else if (find("excuse me", lstatement)>=0 || find("scuse me", lstatement)>=0)
+    else if (find("excuse you", lstatement)>=0 || find("scuse you", lstatement)>=0)
       response = "You are excused.";
     
     else if (find("hi", lstatement)>=0 || find("hello", lstatement)>=0 || find("greetings", lstatement)>=0 || find("hey", lstatement)>=0)
@@ -146,7 +151,7 @@ public class Magpie
     
     else
       response = getRandomResponse();
-    
+
     return response;
   }
   
@@ -170,7 +175,7 @@ public class Magpie
       case 4:
         return "I'm sorry, I didn't hear that; I totally spaced out right there.";
       case 5:
-        return "Sorry, got to go use the bathroom.\nDone! Get it? I'm a computer, so I pee super fast.";
+        return "Really?";
       case 6:
         return "Why?";
       case 7:
@@ -215,7 +220,7 @@ public class Magpie
   private int find(String keyword, String statement)
   {
     statement = " "+statement+" ";
-    for (int i = 1; i < statement.length()-1-keyword.length(); i ++) // for every character,
+    for (int i = 1; i < statement.length()-keyword.length(); i ++) // for every character,
     {
       if (statement.substring(i, i+keyword.length()).equals(keyword)) // if it is the first letter of an instance of the keyword,
         if (!letterCheck(statement.substring(i-1, i)) && !letterCheck(statement.substring(i+keyword.length(), i+keyword.length()+1)))// and there are no letters on either side of it,
@@ -223,5 +228,16 @@ public class Magpie
     }
     
     return -1; // if it does not find a match, then it is false
+  }
+  
+  private String replace(String keyword, String replacement, String statement)
+  {
+    for (int i = 0; i < statement.length()/keyword.length(); i ++) // runs multiple times in case of multiple instances
+      if (find(keyword, statement)>=0)
+      {
+        statement = statement.substring(0, find(keyword, statement)) + replacement + statement.substring(find(keyword, statement)+keyword.length());
+      }
+    
+    return statement;
   }
 }
