@@ -57,6 +57,7 @@ public class Magpie
     lstatement = replace("your", "MYPLACEHOLDER", lstatement);
     lstatement = replace("my", "your", lstatement);
     lstatement = replace("MYPLACEHOLDER", "my", lstatement);
+    lstatement = replace("am", "are", lstatement);
 
     if (lstatement.length() < 1)
       switch ((int)(Math.random()*3))
@@ -75,16 +76,16 @@ public class Magpie
       response = "you should really capitalize your sentences properly.";
     
     else if (find("you want to", lstatement)>=0)
-      response = "Well, then go"+statement.substring(find("you want to", lstatement)+9, statement.length()-1)+"!";
+      response = "Well, then go"+lstatement.substring(find("you want to", lstatement)+11, lstatement.length()-1)+"!";
     
     else if (find("you want", lstatement)>=0)
-      response = "I wish I could give you"+statement.substring(find("you want", lstatement)+6, statement.length()-1)+", but I am merely a computer.";
+      response = "I wish I could give you"+lstatement.substring(find("you want", lstatement)+8, lstatement.length()-1)+", but I am merely a computer.";
     
     else if (find("you like to", lstatement)>=0)
-      response = "I like to"+statement.substring(find("you like to", lstatement)+9, statement.length()-1)+", too!";
+      response = "I like to"+lstatement.substring(find("you like to", lstatement)+11, lstatement.length()-1)+", too!";
     
     else if (find("you like", lstatement)>=0)
-      response = "What do you like about"+statement.substring(find("you like", lstatement)+6, statement.length()-1)+"?";
+      response = "What do you like about"+lstatement.substring(find("you like", lstatement)+8, lstatement.length()-1)+"?";
     
     else if (find("life, the universe, and the ultimate question", lstatement)>=0 || find("life the universe and the ultimate question", lstatement)>=0)
       response = "42!";
@@ -151,7 +152,7 @@ public class Magpie
     
     else
       response = getRandomResponse();
-
+       
     return response;
   }
   
