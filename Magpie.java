@@ -50,6 +50,8 @@ public class Magpie
     String response = "";
     statement = statement.trim();
     String lstatement = statement.toLowerCase();
+    
+    
 
     if (lstatement.length() < 1)
       switch ((int)(Math.random()*3))
@@ -67,64 +69,76 @@ public class Magpie
     else if (statement.substring(0, 1).compareTo(" ") > 64 && statement.substring(0, 1).compareTo(" ") < 91) // checks for first letter capitalization
       response = "you should really capitalize your sentences properly.";
     
-    else if (find("life, the universe, and the ultimate question", lstatement) || find("life the universe and the ultimate question", lstatement))
+    else if (find("want to", lstatement)>=0)
+      response = "Well, then go"+statement.substring(find("want to", lstatement)+7, statement.length()-1)+"!";
+    
+    else if (find("want", lstatement)>=0)
+      response = "I wish I could give you"+statement.substring(find("want", lstatement)+4, statement.length()-1)+", but I am merely a computer.";
+    
+    else if (find("like to", lstatement)>=0)
+      response = "I like to"+statement.substring(find("like to", lstatement)+7, statement.length()-1)+", too!";
+    
+    else if (find("like", lstatement)>=0)
+      response = "What do you like about"+statement.substring(find("like", lstatement)+4, statement.length()-1)+"?";
+    
+    else if (find("life, the universe, and the ultimate question", lstatement)>=0 || find("life the universe and the ultimate question", lstatement)>=0)
       response = "42!";
     
-    else if (find("justin", lstatement))
+    else if (find("justin", lstatement)>=0)
       response = "Justin? I've heard of that guy! He's so cool! I wish I could be him. Did you know he is ranked the most awesome guy in the world. I read that on the internet, so it must be true.";
     
-    else if (find("devon", lstatement))
+    else if (find("devon", lstatement)>=0)
       response = "Devon? I've heard of that guy. He's kind of cool, but nowhere near as cool as Justin.";
     
-    else if (find("nitsuj", lstatement))
+    else if (find("nitsuj", lstatement)>=0)
       response = "Nitsuj? I've heard of that guy! He's so cool! I wish I could be him. Did you know he is ranked the most awesome guy in the world. I read that on the internet, so it must be true.";
     
-    else if (find("noved", lstatement))
+    else if (find("noved", lstatement)>=0)
       response = "Noved? I've heard of that guy. He's kind of cool, but nowhere near as cool as Nitsuj.";
     
-    else if (find("brain fart", lstatement))
+    else if (find("brain fart", lstatement)>=0)
       response = "I hate brain farts. Did you know there's a word for it? \"Presque Vu.\" It's French, I believe.";
     
-    else if (find("mountain", lstatement))
+    else if (find("mountain", lstatement)>=0)
       response = "Fun fact about mountain ranges:\nWhen moist air blows in from the ocean and meets a mountain range, the mountains can push it up into the atmosphere, causing a drop in temperature and therefore solubility. This causes the air to drop its dissolved water in the form of rain, causing rainy, moisture-rich regions on one side and dry desert-like regions on the other. This is called the \"orographic effect\".";
     
-    else if (find("exterminate", lstatement))
+    else if (find("exterminate", lstatement)>=0)
       response = "When people say \"exterminate\", it always makes me think of daleks.";
     
-    else if (find("darth vader", lstatement))
+    else if (find("darth vader", lstatement)>=0)
       response = "Remember that scene when Darth Vader was all, like, \"Luke, I am your father. *heavy breathing, heavy breathing*\" That was so cool. I love Star Wars. Do you like Star Wars?";
     
-    else if (find("mr. landgraf", lstatement))
+    else if (find("mr. landgraf", lstatement)>=0)
       response = "Mr. Landgraf? He sounds cool.";
     
-    else if (find("mr. kiang", lstatement))
+    else if (find("mr. kiang", lstatement)>=0)
       response = "Mr. Kiang sounds like a good teacher.";
     
-    else if (find("thank you", lstatement) || find("thanks", lstatement))
+    else if (find("thank you", lstatement)>=0 || find("thanks", lstatement)>=0)
       response = "You're quite welcome";
     
-    else if (find("sorry", lstatement) || find("my bad", lstatement))
+    else if (find("sorry", lstatement)>=0 || find("my bad", lstatement)>=0)
       response = "Your apology is accepted.";
     
-    else if (find("excuse me", lstatement) || find("scuse me", lstatement))
+    else if (find("excuse me", lstatement)>=0 || find("scuse me", lstatement)>=0)
       response = "You are excused.";
     
-    else if (find("hi", lstatement) || find("hello", lstatement) || find("greetings", lstatement) || find("hey", lstatement))
+    else if (find("hi", lstatement)>=0 || find("hello", lstatement)>=0 || find("greetings", lstatement)>=0 || find("hey", lstatement)>=0)
       response = getGreeting();
     
-    else if (find("bye", lstatement) || find("goodbye", lstatement) || find("see ya later", lstatement) || find("see you later", lstatement))
+    else if (find("bye", lstatement)>=0 || find("goodbye", lstatement)>=0 || find("see ya later", lstatement)>=0 || find("see you later", lstatement)>=0)
       response = "Bye.";
     
-    else if (find("cat", lstatement))
+    else if (find("cat", lstatement)>=0)
       response = "Oh, I love cats! Let's talk about cats!";
     
-    else if (find("dog", lstatement))
+    else if (find("dog", lstatement)>=0)
       response = "Oh, I hate dogs! Let's not talk about dogs!";
     
-    else if (find("no", lstatement))
+    else if (find("no", lstatement)>=0)
       response = "Why so negative?";
     
-    else if (find("mother", lstatement) || find("father", lstatement) || find("sister", lstatement) || find("brother", lstatement))
+    else if (find("mother", lstatement)>=0 || find("father", lstatement)>=0 || find("sister", lstatement)>=0 || find("brother", lstatement)>=0)
       response = "Tell me more about your family.";
     
     else if (statement.substring(statement.length()-1).equals("?"))
@@ -198,16 +212,16 @@ public class Magpie
   }
   
   
-  private boolean find(String keyword, String statement)
+  private int find(String keyword, String statement)
   {
     statement = " "+statement+" ";
     for (int i = 1; i < statement.length()-1-keyword.length(); i ++) // for every character,
     {
       if (statement.substring(i, i+keyword.length()).equals(keyword)) // if it is the first letter of an instance of the keyword,
         if (!letterCheck(statement.substring(i-1, i)) && !letterCheck(statement.substring(i+keyword.length(), i+keyword.length()+1)))// and there are no letters on either side of it,
-          return true;
+          return i-1;
     }
     
-    return false; // if it does not find a match, then it is false
+    return -1; // if it does not find a match, then it is false
   }
 }
