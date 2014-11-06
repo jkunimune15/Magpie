@@ -48,9 +48,10 @@ public class Magpie
   public String getResponse(String statement)
   {
     String response = "";
+    statement = statement.trim();
     String lstatement = statement.toLowerCase();
 
-    if (statement.trim().length() < 1)
+    if (lstatement.length() < 1)
       switch ((int)(Math.random()*3))
       {
         case 0:  response = "Hello?";
