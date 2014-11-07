@@ -75,6 +75,9 @@ public class Magpie
     else if (statement.substring(0, 1).compareTo(" ") > 64 && statement.substring(0, 1).compareTo(" ") < 91) // checks for first letter capitalization
       response = "you should really capitalize your sentences properly.";
     
+    else if (find("you", lstatement)>=0 && find("you", lstatement)<find("me", lstatement))
+      response = "Why do you"+lstatement.substring(find("you", lstatement)+3, find("me", lstatement))+"me?";
+    
     else if (find("you want to", lstatement)>=0)
       response = "Well, then go"+lstatement.substring(find("you want to", lstatement)+11, lstatement.length()-1)+"!";
     
