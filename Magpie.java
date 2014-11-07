@@ -12,7 +12,9 @@
  */
 public class Magpie
 {
-  private int x; // cycles through greetings below
+  private int x; // randomizes some stuff
+  
+  private String userName = "";
   
   private String[] greeting = {"Hello, let's talk.", "Hello.", "Hi.", "Hey.", "Hillo.", "Greetings, human.", "Hi. How are you?"};
   
@@ -47,14 +49,21 @@ public class Magpie
     String response = "";
     statement = statement.trim();
     String lstatement = statement.toLowerCase(); // I edit "lstatement" before processing, but I keep "statement" as the original statement verbatim
+    lstatement = replace("you're", "IMPLACEHOLDER", lstatement);
+    lstatement = replace("i'm", "YOU'REPLACEHOLDER", lstatement);
     lstatement = replace("you", "MEPLACEHOLDER", lstatement); // changes all the pronouns
-    lstatement = replace("i", "you", lstatement);
-    lstatement = replace("me", "you", lstatement);
-    lstatement = replace("MEPLACEHOLDER", "me", lstatement);
+    lstatement = replace("i", "YOUPLACEHOLDER", lstatement);
+    lstatement = replace("me", "YOUPLACEHOLDER", lstatement);
     lstatement = replace("your", "MYPLACEHOLDER", lstatement);
-    lstatement = replace("my", "your", lstatement);
+    lstatement = replace("my", "YOURPLACEHOLDER", lstatement);
+    lstatement = replace("am", "AREPLACEHOLDER", lstatement);
+    lstatement = replace("IMPLACEHOLDER", "I'm", lstatement);
+    lstatement = replace("MEPLACEHOLDER", "me", lstatement);
     lstatement = replace("MYPLACEHOLDER", "my", lstatement);
-    lstatement = replace("am", "are", lstatement);
+    lstatement = replace("YOUPLACEHOLDER", "you", lstatement);
+    lstatement = replace("YOURPLACEHOLDER", "your", lstatement);
+    lstatement = replace("AREPLACEHOLDER", "are", lstatement);
+    lstatement = replace("YOU'REPLACEHOLDER", "you're", lstatement);
 
     if (lstatement.length() < 1)
       response = lonelyMessage[x%lonelyMessage.length];
@@ -86,7 +95,8 @@ public class Magpie
     else if (find("no", lstatement)>=0)
       response = "Okay.";
     
-    else if (find("you", lstatement)>=0 && find("you", lstatement)<find("me", lstatement) && lstatement.substring(find("you", lstatement)+3, find("me", lstatement)).indexOf(".") == -1 && lstatement.substring(find("you", lstatement)+3, find("me", lstatement)).indexOf(",") == -1)
+    else if (find("you", lstatement)>=0 && find("you", lstatement)<find("me", lstatement) && lstatement.substring(find("you", lstatement)+3, find("me", lstatement)).indexOf(".") == -1 &&
+             lstatement.substring(find("you", lstatement)+3, find("me", lstatement)).indexOf(",") == -1)
       response = "Why do you"+lstatement.substring(find("you", lstatement)+3, find("me", lstatement))+"me?";
     
     else if (find("you want to", lstatement)>=0)
@@ -103,6 +113,21 @@ public class Magpie
     
     else if (find("try", lstatement)>=0)
       response = "No! Do or do not. There is no try.";
+    
+    else if (find("my name", lstatement)>=0)
+      response = "My name is Smitty Werbenjagermanjensen.";
+    
+    else if (find("your name is", lstatement)>=0)
+      response = nameUpdate(lstatement.substring(find("your name is", lstatement)+13, lstatement.length()-1));
+    
+    else if (find("you are", lstatement)>=0)
+      response = nameUpdate(lstatement.substring(find("you are", lstatement)+8, lstatement.length()-1));
+    
+    else if (find("you're", lstatement)>=0)
+      response = nameUpdate(lstatement.substring(find("you're", lstatement)+7, lstatement.length()-1));
+    
+    else if (userName == "" && Math.random() > .7)
+      response = "I don't think I caught your name.";
     
     else if (find("life, the universe, and the ultimate question", lstatement)>=0 || find("life the universe and the ultimate question", lstatement)>=0)
       response = "42!";
@@ -131,6 +156,9 @@ public class Magpie
     else if (find("darth vader", lstatement)>=0)
       response = "Remember that scene when Darth Vader was all, like, \"Luke, I am your father. *heavy breathing, heavy breathing*\" That was so cool. I love Star Wars. Do you like Star Wars?";
     
+    else if (find("star wars", lstatement)>=0)
+      response = "I love Star Wars! Star Wars is the best movie saga ever created.";
+    
     else if (find("mr. landgraf", lstatement)>=0)
       response = "Mr. Landgraf? He sounds cool.";
     
@@ -151,6 +179,9 @@ public class Magpie
     
     else
       response = reply[x%reply.length];
+    
+    if (!userName.equals("") && x%7 == 0) // addresses you by name sometimes.
+      response = response.substring(0, response.length()-1) + ", " + userName + response.substring(response.length()-1, response.length());
     
     x += (int)(Math.random()*2+2); // increments x at a fairly random rate
     return response;
@@ -186,5 +217,18 @@ public class Magpie
       }
     
     return statement;
+  }
+  
+  
+  private String nameUpdate(String newName)
+  {
+    String response;
+    if (!userName.equals("") && !userName.equals(newName))
+      response = "I thought your name was " + userName + ".";
+    else
+      response = "Nice to meet you, " + newName + ". My name is Smitty Werbenjagermanjensen.";
+    userName = newName;
+    userName = userName.substring(0,1).toUpperCase() + userName.substring(1); // capitalizes name
+    return response;
   }
 }
