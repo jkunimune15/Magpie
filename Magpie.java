@@ -12,6 +12,8 @@
  */
 public class Magpie
 {
+  private int x; // cycles through greetings below
+  
   private String[] greeting = {"Hello, let's talk.", "Hello.", "Hi.", "Hey.", "Hillo.", "Greetings, human.", "Hi. How are you?"};
   
   private String[] lonelyMessage = {"Hello?", "Is anyone there?", "Are you still there?", "I can hear you breathing."};
@@ -30,7 +32,7 @@ public class Magpie
    */
   public String getGreeting()
   {
-    return greeting[(int)(Math.random()*greeting.length)];
+    return greeting[x%greeting.length];
   }
   
   /**
@@ -55,7 +57,7 @@ public class Magpie
     lstatement = replace("am", "are", lstatement);
 
     if (lstatement.length() < 1)
-      response = lonelyMessage[(int)(Math.random()*lonelyMessage.length)];
+      response = lonelyMessage[x%lonelyMessage.length];
     
     else if (letterCheck(statement.substring(statement.length()-1))) // checks last character to see if it is punctuatino or a letter
       response = "You should really punctuate your sentences properly";
@@ -84,7 +86,7 @@ public class Magpie
     else if (find("no", lstatement)>=0)
       response = "Okay.";
     
-    else if (find("you", lstatement)>=0 && find("you", lstatement)<find("me", lstatement) && lstatement.substring(find("you", lstatement)+3, find("me", lstatement)).indexOf(".") == -1)
+    else if (find("you", lstatement)>=0 && find("you", lstatement)<find("me", lstatement) && lstatement.substring(find("you", lstatement)+3, find("me", lstatement)).indexOf(".") == -1 && lstatement.substring(find("you", lstatement)+3, find("me", lstatement)).indexOf(",") == -1)
       response = "Why do you"+lstatement.substring(find("you", lstatement)+3, find("me", lstatement))+"me?";
     
     else if (find("you want to", lstatement)>=0)
@@ -145,11 +147,12 @@ public class Magpie
       response = "Tell me more about your family.";
     
     else if (statement.substring(statement.length()-1).equals("?"))
-      response = answer[(int)(Math.random()*answer.length)];
+      response = answer[x%answer.length];
     
     else
-      response = reply[(int)(Math.random()*reply.length)];
-       
+      response = reply[x%reply.length];
+    
+    x += (int)(Math.random()*2+2); // increments x at a fairly random rate
     return response;
   }
   
