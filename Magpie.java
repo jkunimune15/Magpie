@@ -64,17 +64,17 @@ public class Magpie
     lstatement = replace("YOURPLACEHOLDER", "your", lstatement);
     lstatement = replace("AREPLACEHOLDER", "are", lstatement);
     lstatement = replace("YOU'REPLACEHOLDER", "you're", lstatement);
-
-    if (lstatement.length() < 1)
+    
+    if (statement.length() < 1)
       response = lonelyMessage[x%lonelyMessage.length];
     
-    else if (letterCheck(statement.substring(statement.length()-1))) // checks last character to see if it is punctuatino or a letter
+    else if (letterCheck(statement.substring(statement.length()-1))) // checks last character to see if it is punctuation or a letter
       response = "You should really punctuate your sentences properly";
     
     else if (statement.substring(0, 1).compareTo(" ") > 64 && statement.substring(0, 1).compareTo(" ") < 91) // checks for first letter capitalization
       response = "you should really capitalize your sentences properly.";
     
-    else if (find("thank me", lstatement)>=0 || find("thanks", lstatement)>=0)
+    if (find("thank me", lstatement)>=0 || find("thanks", lstatement)>=0)
       response = "You're quite welcome";
     
     else if (find("sorry", lstatement)>=0 || find("your bad", lstatement)>=0)
@@ -175,7 +175,12 @@ public class Magpie
       response = "Tell me more about your family.";
     
     else if (statement.substring(statement.length()-1).equals("?"))
-      response = answer[x%answer.length];
+    {
+      if (lstatement.indexOf("what") == 0)
+        response = "I don't know. What?";
+      else
+        response = answer[x%answer.length];
+    }
     
     else
       response = reply[x%reply.length];
@@ -201,7 +206,7 @@ public class Magpie
     {
       if (statement.substring(i, i+keyword.length()).equals(keyword)) // if it is the first letter of an instance of the keyword,
         if (!letterCheck(statement.substring(i-1, i)) && !letterCheck(statement.substring(i+keyword.length(), i+keyword.length()+1)))// and there are no letters on either side of it,
-          return i-1;
+        return i-1;
     }
     
     return -1; // if it does not find a match, then it is false
@@ -212,9 +217,9 @@ public class Magpie
   {
     for (int i = 0; i < statement.length()/keyword.length(); i ++) // runs multiple times in case of multiple instances
       if (find(keyword, statement)>=0)
-      {
-        statement = statement.substring(0, find(keyword, statement)) + replacement + statement.substring(find(keyword, statement)+keyword.length());
-      }
+    {
+      statement = statement.substring(0, find(keyword, statement)) + replacement + statement.substring(find(keyword, statement)+keyword.length());
+    }
     
     return statement;
   }
