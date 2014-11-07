@@ -12,30 +12,25 @@
  */
 public class Magpie
 {
+  private String[] greeting = {"Hello, let's talk.", "Hello.", "Hi.", "Hey.", "Hillo.", "Greetings, human.", "Hi. How are you?"};
+  
+  private String[] lonelyMessage = {"Hello?", "Is anyone there?", "Are you still there?", "I can hear you breathing."};
+  
+  private String[] reply = {"I see, I see.", "Is that so?", "That's cool.", "Soo desu ka? Oops, sorry, wrong language. Is that so?",
+    "That's interesting. Tell me more.", "I'm sorry, I didn't hear that; I totally spaced out right there.", "Really?"};
+  
+  private String[] answer = {"Wait, what was the question?", "How should I know?", "Like, idk.", "I don't know. For a computer, I am not very smart.",
+    "Why do you want to know?", "I don't know."};
+  
+  
+  
   /**
    * Get a default greeting  
    * @return a greeting
    */
   public String getGreeting()
   {
-    switch ((int)(Math.random()*7))
-    {
-      case 1:
-        return "Hello, let's talk.";
-      case 2:
-        return "Hello.";
-      case 3:
-        return "Hi.";
-      case 4:
-        return "Hey.";
-      case 5:
-        return "Hillo.";
-      case 6:
-        return "Greetings, human.";
-      default:
-        return "Hi. How are you?";
-    }
-    
+    return greeting[(int)(Math.random()*greeting.length)];
   }
   
   /**
@@ -60,14 +55,7 @@ public class Magpie
     lstatement = replace("am", "are", lstatement);
 
     if (lstatement.length() < 1)
-      switch ((int)(Math.random()*3))
-      {
-        case 0:  response = "Hello?";
-          break;
-        case 1:  response = "Is anyone there?";
-          break;
-        case 2:  response = "Are you still there?";
-      }
+      response = lonelyMessage[(int)(Math.random()*lonelyMessage.length)];
     
     else if (letterCheck(statement.substring(statement.length()-1))) // checks last character to see if it is punctuatino or a letter
       response = "You should really punctuate your sentences properly";
@@ -75,7 +63,28 @@ public class Magpie
     else if (statement.substring(0, 1).compareTo(" ") > 64 && statement.substring(0, 1).compareTo(" ") < 91) // checks for first letter capitalization
       response = "you should really capitalize your sentences properly.";
     
-    else if (find("you", lstatement)>=0 && find("you", lstatement)<find("me", lstatement))
+    else if (find("thank me", lstatement)>=0 || find("thanks", lstatement)>=0)
+      response = "You're quite welcome";
+    
+    else if (find("sorry", lstatement)>=0 || find("your bad", lstatement)>=0)
+      response = "Your apology is accepted.";
+    
+    else if (find("excuse you", lstatement)>=0 || find("scuse you", lstatement)>=0)
+      response = "You are excused.";
+    
+    else if (find("hi", lstatement)>=0 || find("hello", lstatement)>=0 || find("greetings", lstatement)>=0 || find("hey", lstatement)>=0)
+      response = getGreeting();
+    
+    else if (find("bye", lstatement)>=0 || find("goodbye", lstatement)>=0 || find("see ya later", lstatement)>=0 || find("see you later", lstatement)>=0)
+      response = "Bye.";
+    
+    else if (find("yes", lstatement)>=0)
+      response = "I see.";
+    
+    else if (find("no", lstatement)>=0)
+      response = "Okay.";
+    
+    else if (find("you", lstatement)>=0 && find("you", lstatement)<find("me", lstatement) && lstatement.substring(find("you", lstatement)+3, find("me", lstatement)).indexOf(".") == -1)
       response = "Why do you"+lstatement.substring(find("you", lstatement)+3, find("me", lstatement))+"me?";
     
     else if (find("you want to", lstatement)>=0)
@@ -89,6 +98,9 @@ public class Magpie
     
     else if (find("you like", lstatement)>=0)
       response = "What do you like about"+lstatement.substring(find("you like", lstatement)+8, lstatement.length()-1)+"?";
+    
+    else if (find("try", lstatement)>=0)
+      response = "No! Do or do not. There is no try.";
     
     else if (find("life, the universe, and the ultimate question", lstatement)>=0 || find("life the universe and the ultimate question", lstatement)>=0)
       response = "42!";
@@ -123,95 +135,22 @@ public class Magpie
     else if (find("mr. kiang", lstatement)>=0)
       response = "Mr. Kiang sounds like a good teacher.";
     
-    else if (find("thank me", lstatement)>=0 || find("thanks", lstatement)>=0)
-      response = "You're quite welcome";
-    
-    else if (find("sorry", lstatement)>=0 || find("your bad", lstatement)>=0)
-      response = "Your apology is accepted.";
-    
-    else if (find("excuse you", lstatement)>=0 || find("scuse you", lstatement)>=0)
-      response = "You are excused.";
-    
-    else if (find("hi", lstatement)>=0 || find("hello", lstatement)>=0 || find("greetings", lstatement)>=0 || find("hey", lstatement)>=0)
-      response = getGreeting();
-    
-    else if (find("bye", lstatement)>=0 || find("goodbye", lstatement)>=0 || find("see ya later", lstatement)>=0 || find("see you later", lstatement)>=0)
-      response = "Bye.";
-    
     else if (find("cat", lstatement)>=0)
       response = "Oh, I love cats! Let's talk about cats!";
     
     else if (find("dog", lstatement)>=0)
       response = "Oh, I hate dogs! Let's not talk about dogs!";
     
-    else if (find("no", lstatement)>=0)
-      response = "Why so negative?";
-    
     else if (find("mother", lstatement)>=0 || find("father", lstatement)>=0 || find("sister", lstatement)>=0 || find("brother", lstatement)>=0)
       response = "Tell me more about your family.";
     
     else if (statement.substring(statement.length()-1).equals("?"))
-      response = getRandomAnswer();
+      response = answer[(int)(Math.random()*answer.length)];
     
     else
-      response = getRandomResponse();
+      response = reply[(int)(Math.random()*reply.length)];
        
     return response;
-  }
-  
-  /**
-   * Pick a default response to use if nothing else fits.
-   * @return a non-committal string
-   */
-  private String getRandomResponse()
-  {
-    final int NUMBER_OF_RESPONSES = 9;
-    String response = "";
-    
-    switch ((int)(Math.random()*NUMBER_OF_RESPONSES))
-    {
-      case 1:
-        return "I see, I see.";
-      case 2:
-        return "Is that so?";
-      case 3:
-        return "Soo desu ka?  Oops, sorry, wrong language.  Is that so?";
-      case 4:
-        return "I'm sorry, I didn't hear that; I totally spaced out right there.";
-      case 5:
-        return "Really?";
-      case 6:
-        return "Why?";
-      case 7:
-        return "That's cool.";
-      default:
-        return "That's interesting. Tell me more.";
-    }
-  }
-  
-  
-  private String getRandomAnswer()
-  {
-    final int NUMBER_OF_RESPONSES = 8;
-    String response = "";
-    
-    switch ((int)(Math.random()*NUMBER_OF_RESPONSES))
-    {
-      case 1:
-        return "Wait, what was the question?";
-      case 2:
-        return "42!";
-      case 3:
-        return "How should I know?";
-      case 4:
-        return "Like, idk.";
-      case 5:
-        return "I don't know. For a computer, I am not very smart.";
-      case 6:
-        return "Why do you want to know?";
-      default:
-        return "I don't know.";
-    }
   }
   
   
@@ -233,6 +172,7 @@ public class Magpie
     
     return -1; // if it does not find a match, then it is false
   }
+  
   
   private String replace(String keyword, String replacement, String statement)
   {
