@@ -24,7 +24,8 @@ public class Magpie
     "That's interesting. Tell me more.", "I'm sorry, I didn't hear that; I totally spaced out right there.", "Really?"};
   
   private String[] answer = {"Wait, what was the question?", "How should I know?", "Like, idk.", "I don't know. For a computer, I am not very smart.",
-    "Why do you want to know?", "I don't know."};
+    "Why do you want to know?", "I don't know.", "Yes.", "No.", "Aboslutely.", "Absolutely not.", "Absolutely...not!", "Maybe.", "Possibly.",
+    "That depends. Who's asking?."};
   
   
   
@@ -178,12 +179,31 @@ public class Magpie
     {
       if (lstatement.indexOf("what") == 0)
         response = "I don't know. What?";
+      else if (lstatement.indexOf("who") == 0)
+        response = "You're mom.";
+      else if (lstatement.indexOf("why") == 0)
+        response = "'cause can.";
+      else if (lstatement.indexOf("how many") == 0)
+        response = "Over nine thousand.";
+      else if (lstatement.indexOf("how much") == 0)
+        response = "Over nine thousand.";
+      else if (lstatement.indexOf("how long") == 0)
+        response = "Long enough.";
+      else if (lstatement.indexOf("how") == 0)
+        response = "Magic.";
+      else if (lstatement.indexOf("when") == 0)
+        response = "Get-yourself-a-watch o'clock.";
+      else if (lstatement.indexOf("where") == 0)
+        response = "A long time ago in a galaxy far far away.";
+      else if (lstatement.indexOf("which") == 0)
+        response = "The blue one.";
       else
         response = answer[x%answer.length];
     }
     
     else
-      response = reply[x%reply.length];
+   //   response = reply[x%reply.length];
+      response = statementConversion(statement);
     
     if (!userName.equals("") && x%7 == 0) // addresses you by name sometimes.
       response = response.substring(0, response.length()-1) + ", " + userName + response.substring(response.length()-1, response.length());
@@ -235,5 +255,35 @@ public class Magpie
     userName = newName;
     userName = userName.substring(0,1).toUpperCase() + userName.substring(1); // capitalizes name
     return response;
+  }
+  
+  
+  public String statementConversion(String statement)
+  {
+    if (find("is", statement) >= 0)
+      return "Why is " + statement.substring(0, find("is", statement)) + statement.substring(find("is", statement)+3);
+    
+    if (find("was", statement) >= 0)
+      return "Why was " + statement.substring(0, find("was", statement)) + statement.substring(find("was", statement)+4);
+    
+    if (find("can", statement) >= 0)
+      return "Why can " + statement.substring(0, find("can", statement)) + statement.substring(find("can", statement)+4);
+    
+    if (find("could", statement) >= 0)
+      return "Why could " + statement.substring(0, find("could", statement)) + statement.substring(find("could", statement)+6);
+    
+    if (find("shall", statement) >= 0)
+      return "Why shall " + statement.substring(0, find("shall", statement)) + statement.substring(find("shall", statement)+6);
+    
+    if (find("should", statement) >= 0)
+      return "Why should " + statement.substring(0, find("should", statement)) + statement.substring(find("should", statement)+7);
+    
+    if (find("will", statement) >= 0)
+      return "Why will " + statement.substring(0, find("will", statement)) + statement.substring(find("will", statement)+5);
+    
+    if (find("would", statement) >= 0)
+      return "Why would " + statement.substring(0, find("would", statement)) + statement.substring(find("would", statement)+6);
+    
+    return "Why?";
   }
 }
