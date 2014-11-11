@@ -25,7 +25,7 @@ public class Magpie
   
   private String[] answer = {"Wait, what was the question?", "Yes.", "How should I know?", "Aboslutely.", "Absolutely...not!", "Like, idk.",
     "I don't know. For a computer, I am not very smart.", "Why do you want to know?", "I don't know.", "No.", "Absolutely not.", "Maybe.", "Possibly.",
-    "That depends. Who's asking?.", "Affirmative.", "Negative.", "Affirmatory.", "Negatory.", "I think so.", "I don't think so.", "Probably.", "Probably not."};
+    "That depends. Who's asking?", "Affirmative.", "Negative.", "Affirmatory.", "Negatory.", "I think so.", "I don't think so.", "Probably.", "Probably not."};
   
   private String[] confirmation = {"Okay.", "On it.", "Will do!", "Yes, sir - I mean, ma'am, I mean boss, I mean puba!", "Sure.", "I will do my best."};
   
@@ -33,7 +33,7 @@ public class Magpie
     "are", "was", "am", "had to", "must", "had", "have", "had", "has"};
   
   private String[] verbs = {"run", "throw", "eat", "drink", "hug", "love", "hate", "hit", "break", "work", "tally", "marry", "donate", "believe", "fill",
-    "kill", "bring", "lie", "enjoy", "laugh", "play", "stand", "lay", "review", "write", "read", "live", "make", "understand", "bake", "open", "close", "let"};
+    "kill", "bring", "lie", "enjoy", "laugh", "play", "stand", "lay", "review", "write", "read", "live", "make", "understand", "bake", "open", "close", "let", "know"};
   
   
   
@@ -292,14 +292,15 @@ public class Magpie
         newStatement += "are";
         i += 2;
       }
-      else if (find("you are", statement.substring(i)) == 0)
-      {
-        newStatement += "i am";
-        i += 7;
-      }
       else if (find("you", statement.substring(i)) == 0)
       {
-        newStatement += "me";
+        boolean subjective = false;
+        for (String v: auxVerbs)
+          subjective = subjective || (i < statement.length()-4-v.length() && statement.substring(i+4, i+4+v.length()).equals(v));
+        for (String v: verbs)
+          subjective = subjective || (i < statement.length()-4-v.length() && statement.substring(i+4, i+4+v.length()).equals(v));
+        if (subjective)  newStatement += "i";
+        else             newStatement += "me";
         i += 3;
       }
       else if (find("my", statement.substring(i)) == 0)
