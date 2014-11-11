@@ -27,6 +27,9 @@ public class Magpie
     "Why do you want to know?", "I don't know.", "Yes.", "No.", "Aboslutely.", "Absolutely not.", "Absolutely...not!", "Maybe.", "Possibly.",
     "That depends. Who's asking?."};
   
+  private String[] auxVerbs = {"could", "can", "would", "will", "should", "shall", "could", "may", "may", "might", "did", "do", "did", "does", "was", "is", "were",
+    "are", "was", "am", "had to", "must", "had", "have", "had", "has"};
+  
   
   
   /**
@@ -306,35 +309,12 @@ public class Magpie
   }
   
   
-  public String statementConversion(String statement)
+  private String statementConversion(String statement)
   {
-    if (find("is", statement) >= 0)
-      return "Why is " + statement.substring(0, find("is", statement)) + statement.substring(find("is", statement)+3, statement.length()-1)+"?";
+    for (String v: auxVerbs)
+      if (find(v, statement) >= 0)
+        return "Why " + v + " " + statement.substring(0, find(v, statement)-1) + statement.substring(find(v, statement)+v.length(), statement.length()-1) + "?";
     
-    if (find("are", statement) >= 0)
-      return "Why are " + statement.substring(0, find("are", statement)) + statement.substring(find("are", statement)+3, statement.length()-1)+"?";
-    
-    if (find("was", statement) >= 0)
-      return "Why was " + statement.substring(0, find("was", statement)) + statement.substring(find("was", statement)+4, statement.length()-1)+"?";
-    
-    if (find("can", statement) >= 0)
-      return "Why can " + statement.substring(0, find("can", statement)) + statement.substring(find("can", statement)+4, statement.length()-1)+"?";
-    
-    if (find("could", statement) >= 0)
-      return "Why could " + statement.substring(0, find("could", statement)) + statement.substring(find("could", statement)+6, statement.length()-1)+"?";
-    
-    if (find("shall", statement) >= 0)
-      return "Why shall " + statement.substring(0, find("shall", statement)) + statement.substring(find("shall", statement)+6, statement.length()-1)+"?";
-    
-    if (find("should", statement) >= 0)
-      return "Why should " + statement.substring(0, find("should", statement)) + statement.substring(find("should", statement)+7, statement.length()-1)+"?";
-    
-    if (find("will", statement) >= 0)
-      return "Why will " + statement.substring(0, find("will", statement)) + statement.substring(find("will", statement)+5, statement.length()-1)+"?";
-    
-    if (find("would", statement) >= 0)
-      return "Why would " + statement.substring(0, find("would", statement)) + statement.substring(find("would", statement)+6, statement.length()-1)+"?";
-    
-    return "Why?";
+    return "Why does " + statement.substring(0, statement.length()-1) + "?";
   }
 }
