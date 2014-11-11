@@ -30,6 +30,9 @@ public class Magpie
   private String[] auxVerbs = {"could", "can", "would", "will", "should", "shall", "could", "may", "may", "might", "did", "do", "did", "does", "was", "is", "were",
     "are", "was", "am", "had to", "must", "had", "have", "had", "has"};
   
+  private String[] verbs = {"run", "throw", "eat", "drink", "hug", "love", "hate", "hit", "break", "work", "tally", "marry", "donate", "believe", "fill",
+    "kill", "bring", "lie", "enjoy", "laugh", "play", "stand", "lay", "review", "write", "read", "live", "make", "understand", "bake"};
+  
   
   
   /**
@@ -215,18 +218,6 @@ public class Magpie
   }
   
   
-  /*private String replace(String keyword, String replacement, String statement)
-  {
-    for (int i = 0; i < statement.length()/keyword.length(); i ++) // runs multiple times in case of multiple instances
-      if (find(keyword, statement)>=0)
-    {
-      statement = statement.substring(0, find(keyword, statement)) + replacement + statement.substring(find(keyword, statement)+keyword.length());
-    }
-    
-    return statement;
-  }*/
-  
-  
   private String nameUpdate(String newName)
   {
     String response;
@@ -315,6 +306,60 @@ public class Magpie
       if (find(v, statement) >= 0)
         return "Why " + v + " " + statement.substring(0, find(v, statement)-1) + statement.substring(find(v, statement)+v.length(), statement.length()-1) + "?";
     
-    return "Why does " + statement.substring(0, statement.length()-1) + "?";
+    for (String v: verbs)
+      if (find(v, statement) >= 0)
+        return "Why do " + statement.substring(0, statement.length()-1) + "?";
+    
+    for (String v: verbs)
+      if (find(pastTense(v), statement) >= 0)
+        return "Why did " + statement.substring(0, find(pastTense(v), statement)) + v + statement.substring(find(pastTense(v), statement)+pastTense(v).length(), statement.length()-1) + "?";
+    
+    for (String v: verbs)
+      if (find(plural(v), statement) >= 0)
+        return "Why does " + statement.substring(0, find(plural(v), statement)) + v + statement.substring(find(plural(v), statement)+plural(v).length(), statement.length()-1) + "?";
+    
+    return reply[x%answer.length];
+  }
+  
+  
+  private String pastTense(String word)
+  {
+    if (word.substring(word.length()-3).equals("eat"))
+      return word.substring(0, word.length()-3) + "ate";
+    else if (word.substring(word.length()-3).equals("in"))
+      return word.substring(0, word.length()-3) + "an";
+    else if (word.substring(word.length()-3).equals("ink"))
+      return word.substring(0, word.length()-3) + "ank";
+    else if (word.substring(word.length()-3).equals("ing"))
+      return word.substring(0, word.length()-3) + "ang";
+    else if (word.substring(word.length()-3).equals("and"))
+      return word.substring(0, word.length()-3) + "ood";
+    else if (word.substring(word.length()-2).equals("ow"))
+      return word.substring(0, word.length()-2) + "ew";
+    else if (word.substring(word.length()-3).equals("ite"))
+      return word.substring(0, word.length()-3) + "ote";
+    else if (word.substring(word.length()-2).equals("un"))
+      return word.substring(0, word.length()-2) + "an";
+    else if (word.substring(word.length()-1).equals("y"))
+      return word.substring(0, word.length()-1) + "ied";
+    else if (word.substring(word.length()-1).equals("e"))
+      return word + "d";
+    else
+      return word + "ed";
+  }
+  
+  
+  private String plural(String word)
+  {
+    if (word.substring(word.length()-1).equals("f"))
+      return word.substring(0, word.length()-1) + "ves";
+    else if (word.substring(word.length()-1).equals("y"))
+      return word.substring(0, word.length()-1) + "ies";
+    else if (word.substring(word.length()-2).equals("us"))
+      return word.substring(0, word.length()-2) + "i";
+    else if (word.substring(word.length()-1).equals("s"))
+      return word + "es";
+    else
+      return word + "s";
   }
 }
