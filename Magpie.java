@@ -50,21 +50,7 @@ public class Magpie
     String response = "";
     statement = statement.trim();
     String lstatement = statement.toLowerCase(); // I edit "lstatement" before processing, but I keep "statement" as the original statement verbatim
-    lstatement = replace("you're", "IMPLACEHOLDER", lstatement);
-    lstatement = replace("i'm", "YOU'REPLACEHOLDER", lstatement);
-    lstatement = replace("you", "MEPLACEHOLDER", lstatement); // changes all the pronouns
-    lstatement = replace("i", "YOUPLACEHOLDER", lstatement);
-    lstatement = replace("me", "YOUPLACEHOLDER", lstatement);
-    lstatement = replace("your", "MYPLACEHOLDER", lstatement);
-    lstatement = replace("my", "YOURPLACEHOLDER", lstatement);
-    lstatement = replace("am", "AREPLACEHOLDER", lstatement);
-    lstatement = replace("IMPLACEHOLDER", "I'm", lstatement);
-    lstatement = replace("MEPLACEHOLDER", "me", lstatement);
-    lstatement = replace("MYPLACEHOLDER", "my", lstatement);
-    lstatement = replace("YOUPLACEHOLDER", "you", lstatement);
-    lstatement = replace("YOURPLACEHOLDER", "your", lstatement);
-    lstatement = replace("AREPLACEHOLDER", "are", lstatement);
-    lstatement = replace("YOU'REPLACEHOLDER", "you're", lstatement);
+    lstatement = toSecondPerson(lstatement);
     
     if (statement.length() < 1)
       response = lonelyMessage[x%lonelyMessage.length];
@@ -96,10 +82,6 @@ public class Magpie
     else if (find("no", lstatement)>=0)
       response = "Okay.";
     
-    else if (find("you", lstatement)>=0 && find("you", lstatement)<find("me", lstatement) && lstatement.substring(find("you", lstatement)+3, find("me", lstatement)).indexOf(".") == -1 &&
-             lstatement.substring(find("you", lstatement)+3, find("me", lstatement)).indexOf(",") == -1)
-      response = "Why do you"+lstatement.substring(find("you", lstatement)+3, find("me", lstatement))+"me?";
-    
     else if (find("you want to", lstatement)>=0)
       response = "Well, then go"+lstatement.substring(find("you want to", lstatement)+11, lstatement.length()-1)+"!";
     
@@ -118,14 +100,11 @@ public class Magpie
     else if (find("my name", lstatement)>=0)
       response = "My name is Smitty Werbenjagermanjensen.";
     
-    else if (find("your name is", lstatement)>=0)
+    else if (find("your name is", lstatement)>=0 && find("your name is", lstatement)<lstatement.length()-14)
       response = nameUpdate(lstatement.substring(find("your name is", lstatement)+13, lstatement.length()-1));
     
-    else if (find("you are", lstatement)>=0)
+    else if (find("you are", lstatement)>=0 && find("you are", lstatement)<lstatement.length()-9)
       response = nameUpdate(lstatement.substring(find("you are", lstatement)+8, lstatement.length()-1));
-    
-    else if (find("you're", lstatement)>=0)
-      response = nameUpdate(lstatement.substring(find("you're", lstatement)+7, lstatement.length()-1));
     
     else if (userName == "" && Math.random() > .7)
       response = "I don't think I caught your name.";
@@ -203,7 +182,7 @@ public class Magpie
     
     else
    //   response = reply[x%reply.length];
-      response = statementConversion(statement);
+      response = statementConversion(lstatement);
     
     if (!userName.equals("") && x%7 == 0) // addresses you by name sometimes.
       response = response.substring(0, response.length()-1) + ", " + userName + response.substring(response.length()-1, response.length());
@@ -233,7 +212,7 @@ public class Magpie
   }
   
   
-  private String replace(String keyword, String replacement, String statement)
+  /*private String replace(String keyword, String replacement, String statement)
   {
     for (int i = 0; i < statement.length()/keyword.length(); i ++) // runs multiple times in case of multiple instances
       if (find(keyword, statement)>=0)
@@ -242,7 +221,7 @@ public class Magpie
     }
     
     return statement;
-  }
+  }*/
   
   
   private String nameUpdate(String newName)
@@ -258,31 +237,103 @@ public class Magpie
   }
   
   
+  private String toSecondPerson(String statement)
+  {
+    String newStatement = "";
+    for (int i = 0; i < statement.length();)
+    {
+      if (!letterCheck(statement.substring(i)))
+      {
+        newStatement += statement.substring(i, i+1);
+        i ++;
+      }
+      else if (find("i", statement.substring(i)) == 0)
+      {
+        newStatement += "you";
+        i += 1;
+      }
+      else if (find("me", statement.substring(i)) == 0)
+      {
+        newStatement += "you";
+        i += 2;
+      }
+      else if (find("am", statement.substring(i)) == 0)
+      {
+        newStatement += "are";
+        i += 2;
+      }
+      else if (find("you are", statement.substring(i)) == 0)
+      {
+        newStatement += "i am";
+        i += 7;
+      }
+      else if (find("you", statement.substring(i)) == 0)
+      {
+        newStatement += "me";
+        i += 3;
+      }
+      else if (find("my", statement.substring(i)) == 0)
+      {
+        newStatement += "your";
+        i += 2;
+      }
+      else if (find("your", statement.substring(i)) == 0)
+      {
+        newStatement += "my";
+        i += 4;
+      }
+      else if (find("mine", statement.substring(i)) == 0)
+      {
+        newStatement += "yours";
+        i += 4;
+      }
+      else if (find("yours", statement.substring(i)) == 0)
+      {
+        newStatement += "mine";
+        i += 5;
+      }
+      else
+      {
+        while (letterCheck(statement.substring(i)))
+        {
+          newStatement += statement.substring(i, i+1);
+          i ++;
+        }
+      }
+    }
+    
+    return newStatement;
+  }
+  
+  
   public String statementConversion(String statement)
   {
     if (find("is", statement) >= 0)
-      return "Why is " + statement.substring(0, find("is", statement)) + statement.substring(find("is", statement)+3);
+      return "Why is " + statement.substring(0, find("is", statement)) + statement.substring(find("is", statement)+3, statement.length()-1)+"?";
+    
+    if (find("are", statement) >= 0)
+      return "Why are " + statement.substring(0, find("are", statement)) + statement.substring(find("are", statement)+3, statement.length()-1)+"?";
     
     if (find("was", statement) >= 0)
-      return "Why was " + statement.substring(0, find("was", statement)) + statement.substring(find("was", statement)+4);
+      return "Why was " + statement.substring(0, find("was", statement)) + statement.substring(find("was", statement)+4, statement.length()-1)+"?";
     
     if (find("can", statement) >= 0)
-      return "Why can " + statement.substring(0, find("can", statement)) + statement.substring(find("can", statement)+4);
+      return "Why can " + statement.substring(0, find("can", statement)) + statement.substring(find("can", statement)+4, statement.length()-1)+"?";
     
     if (find("could", statement) >= 0)
-      return "Why could " + statement.substring(0, find("could", statement)) + statement.substring(find("could", statement)+6);
+      return "Why could " + statement.substring(0, find("could", statement)) + statement.substring(find("could", statement)+6, statement.length()-1)+"?";
     
     if (find("shall", statement) >= 0)
-      return "Why shall " + statement.substring(0, find("shall", statement)) + statement.substring(find("shall", statement)+6);
+      return "Why shall " + statement.substring(0, find("shall", statement)) + statement.substring(find("shall", statement)+6, statement.length()-1)+"?";
     
     if (find("should", statement) >= 0)
-      return "Why should " + statement.substring(0, find("should", statement)) + statement.substring(find("should", statement)+7);
+      return "Why should " + statement.substring(0, find("should", statement)) + statement.substring(find("should", statement)+7, statement.length()-1)+"?";
     
     if (find("will", statement) >= 0)
-      return "Why will " + statement.substring(0, find("will", statement)) + statement.substring(find("will", statement)+5);
+      return "Why will " + statement.substring(0, find("will", statement)) + statement.substring(find("will", statement)+5, statement.length()-1)+"?";
     
     if (find("would", statement) >= 0)
-      return "Why would " + statement.substring(0, find("would", statement)) + statement.substring(find("would", statement)+6);
+      return "Why would " + statement.substring(0, find("would", statement)) + statement.substring(find("would", statement)+6, statement.length()-1)+"?";
     
     return "Why?";
   }
