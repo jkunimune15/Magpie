@@ -27,11 +27,13 @@ public class Magpie
     "Why do you want to know?", "I don't know.", "Yes.", "No.", "Aboslutely.", "Absolutely not.", "Absolutely...not!", "Maybe.", "Possibly.",
     "That depends. Who's asking?."};
   
+  private String[] confirmation = {"Okay.", "On it.", "Will do!", "Yes, sir - I mean, ma'am, I mean boss, I mean puba!", "Sure.", "I will do my best."};
+  
   private String[] auxVerbs = {"could", "can", "would", "will", "should", "shall", "could", "may", "may", "might", "did", "do", "did", "does", "was", "is", "were",
     "are", "was", "am", "had to", "must", "had", "have", "had", "has"};
   
   private String[] verbs = {"run", "throw", "eat", "drink", "hug", "love", "hate", "hit", "break", "work", "tally", "marry", "donate", "believe", "fill",
-    "kill", "bring", "lie", "enjoy", "laugh", "play", "stand", "lay", "review", "write", "read", "live", "make", "understand", "bake"};
+    "kill", "bring", "lie", "enjoy", "laugh", "play", "stand", "lay", "review", "write", "read", "live", "make", "understand", "bake", "open", "close"};
   
   
   
@@ -160,7 +162,7 @@ public class Magpie
     else if (find("mother", lstatement)>=0 || find("father", lstatement)>=0 || find("sister", lstatement)>=0 || find("brother", lstatement)>=0)
       response = "Tell me more about your family.";
     
-    else if (statement.substring(statement.length()-1).equals("?"))
+    else if (statement.substring(statement.length()-1).equals("?")) // interrogative sentence
     {
       if (lstatement.indexOf("what") == 0)
         response = "I don't know. What?";
@@ -186,15 +188,31 @@ public class Magpie
         response = answer[x%answer.length];
     }
     
+    else if (imperativeCheck(lstatement))
+    {
+      response = confirmation[x%confirmation.length];
+    }
+    
     else
-   //   response = reply[x%reply.length];
-      response = statementConversion(lstatement);
+      response = statementConversion(lstatement); // declarative sentence
     
     if (!userName.equals("") && x%7 == 0) // addresses you by name sometimes.
       response = response.substring(0, response.length()-1) + ", " + userName + response.substring(response.length()-1, response.length());
     
     x += (int)(Math.random()*2+2); // increments x at a fairly random rate
     return response;
+  }
+  
+  
+  private boolean imperativeCheck(String sentence)
+  {
+    for (String v: verbs)
+      if (find(v, sentence) == 0)
+        return true;
+    for (String v: auxVerbs)
+      if (find(v, sentence) == 0)
+        return true;
+    return false;
   }
   
   
@@ -318,7 +336,7 @@ public class Magpie
       if (find(plural(v), statement) >= 0)
         return "Why does " + statement.substring(0, find(plural(v), statement)) + v + statement.substring(find(plural(v), statement)+plural(v).length(), statement.length()-1) + "?";
     
-    return reply[x%answer.length];
+    return reply[x%reply.length];
   }
   
   
