@@ -168,7 +168,13 @@ public class Magpie
     
     else if (statement.substring(statement.length()-1).equals("?")) // interrogative sentence
     {
-      if (find("what", lstatement) == 0)
+      if (find("how are me", lstatement) == 0)
+        response = "I am fine. Thank you for asking.";
+      else if (find("who are me", lstatement) == 0)
+        response = "I am Smitty Werbenjagermanjensen.";
+      else if (find("what are me", lstatement) == 0)
+        response = "I am a human.";
+      else if (find("what", lstatement) == 0)
         response = "I don't know. What?";
       else if (find("who", lstatement) == 0)
         response = "You're mom.";
@@ -206,7 +212,9 @@ public class Magpie
     if (!userName.equals("") && x%7 == 6) // addresses you by name sometimes.
       response = response.substring(0, response.length()-1) + ", " + userName + response.substring(response.length()-1, response.length());
     
-    response = response.substring(0,1).toUpperCase() + response.substring(1);
+    response = response.substring(0,1).toUpperCase() + response.substring(1); // Capitalizes response
+    while (find("i", response) >= 0)
+      response = response.substring(0,find("i", response)) + "I" + response.substring(find("i", response)+1);
     
     x += (int)(Math.random()*2+2); // increments x at a fairly random rate
     return response;
@@ -314,6 +322,11 @@ public class Magpie
         newStatement += "mine";
         i += 5;
       }
+      else if (find("was", statement.substring(i)) == 0 && find("you", newStatement) >= 0) // "was" only changes if there is a "you" before it.
+      {
+        newStatement += "were";
+        i += 3;
+      }
       else
       {
         while (letterCheck(statement.substring(i)))
@@ -333,46 +346,47 @@ public class Magpie
     switch (x%3)
     {
       case 1:
-      for (String v: auxVerbs)
-        if (find(v, statement) >= 0)
-        return "Why " + v + " " + statement.substring(0, find(v, statement)-1) + statement.substring(find(v, statement)+v.length(), statement.length()-1) + "?";
-      for (String v: verbs)
-        if (find(v, statement) >= 0)
-        return "Why do " + statement.substring(0, statement.length()-1) + "?";
-      for (String v: verbs)
-        if (find(pastTense(v), statement) >= 0)
-        return "Why did " + statement.substring(0, find(pastTense(v), statement)) + v + statement.substring(find(pastTense(v), statement)+pastTense(v).length(), statement.length()-1) + "?";
-      for (String v: verbs)
-        if (find(plural(v), statement) >= 0)
-        return "Why does " + statement.substring(0, find(plural(v), statement)) + v + statement.substring(find(plural(v), statement)+plural(v).length(), statement.length()-1) + "?";
-      break;
+        for (String v: auxVerbs)
+          if (find(v, statement) >= 0)
+            return "Why " + v + " " + statement.substring(0, find(v, statement)-1) + statement.substring(find(v, statement)+v.length(), statement.length()-1) + "?";
+        for (String v: verbs)
+          if (find(v, statement) >= 0)
+            return "Why do " + statement.substring(0, statement.length()-1) + "?";
+        for (String v: verbs)
+          if (find(pastTense(v), statement) >= 0)
+            return "Why did " + statement.substring(0, find(pastTense(v), statement)) + v + statement.substring(find(pastTense(v), statement)+pastTense(v).length(), statement.length()-1) + "?";
+        for (String v: verbs)
+          if (find(plural(v), statement) >= 0)
+            return "Why does " + statement.substring(0, find(plural(v), statement)) + v + statement.substring(find(plural(v), statement)+plural(v).length(), statement.length()-1) + "?";
+        break;
       case 2:
-      for (String v: auxVerbs)
-        if (find(v, statement) >= 0)
-        return v + " " + statement.substring(0, find(v, statement)-1) + statement.substring(find(v, statement)+v.length(), statement.length()-1) + "? Really?";
-      for (String v: verbs)
-        if (find(v, statement) >= 0)
-        return "Do " + statement.substring(0, statement.length()-1) + "? Really?";
-      for (String v: verbs)
-        if (find(pastTense(v), statement) >= 0)
-        return "Did " + statement.substring(0, find(pastTense(v), statement)) + v + statement.substring(find(pastTense(v), statement)+pastTense(v).length(), statement.length()-1) + "? Really?";
-      for (String v: verbs)
-        if (find(plural(v), statement) >= 0)
-        return "Does " + statement.substring(0, find(plural(v), statement)) + v + statement.substring(find(plural(v), statement)+plural(v).length(), statement.length()-1) + "? Really?";
-      break;
+        for (String v: auxVerbs)
+          if (find(v, statement) >= 0)
+            return v + " " + statement.substring(0, find(v, statement)-1) + statement.substring(find(v, statement)+v.length(), statement.length()-1) + "? Really?";
+        for (String v: verbs)
+          if (find(v, statement) >= 0)
+            return "Do " + statement.substring(0, statement.length()-1) + "? Really?";
+        for (String v: verbs)
+          if (find(pastTense(v), statement) >= 0)
+            return "Did " + statement.substring(0, find(pastTense(v), statement)) + v + statement.substring(find(pastTense(v), statement)+pastTense(v).length(), statement.length()-1) + "? Really?";
+        for (String v: verbs)
+          if (find(plural(v), statement) >= 0)
+            return "Does " + statement.substring(0, find(plural(v), statement)) + v + statement.substring(find(plural(v), statement)+plural(v).length(), statement.length()-1) + "? Really?";
+        break;
       default:
-      for (String v: auxVerbs)
-        if (find(v, statement) >= 0)
-        return "I did not know " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length());
-      for (String v: verbs)
-        if (find(v, statement) >= 0)
-        return "I did not know " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length());
-      for (String v: verbs)
-        if (find(pastTense(v), statement) >= 0)
-        return "I did not know " + statement;
-      for (String v: verbs)
-        if (find(plural(v), statement) >= 0)
-        return "I did not know " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length());
+        for (String v: auxVerbs)
+          if (find(v, statement) >= 0)
+            return "I did not know " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length());
+        for (String v: verbs)
+          if (find(v, statement) >= 0)
+            return "I did not know " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length());
+        for (String v: verbs)
+          if (find(pastTense(v), statement) >= 0)
+            return "I did not know " + statement;
+        for (String v: verbs)
+          if (find(plural(v), statement) >= 0)
+            return "I did not know " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length());
+        break;
     }    
     return reply[x%reply.length];
   }
