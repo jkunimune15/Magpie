@@ -70,7 +70,7 @@ public class Magpie
     else if (statement.substring(0, 1).compareTo(" ") > 64 && statement.substring(0, 1).compareTo(" ") < 91) // checks for first letter capitalization
       response = "you should really capitalize your sentences properly.";
     
-    if (find("thank me", lstatement)>=0 || find("thanks", lstatement)>=0)
+    else if (find("thank me", lstatement)>=0 || find("thanks", lstatement)>=0)
       response = "You're quite welcome";
     
     else if (find("sorry", lstatement)>=0 || find("your bad", lstatement)>=0)
