@@ -28,14 +28,14 @@ public class Magpie
     "That depends. Who's asking?", "Affirmative.", "Negative.", "Affirmatory.", "I think so.", "Probably.", "Probably not."};
   
   private String[] confirmation = {"Okay.", "On it.", "Will do!", "Yes, sir - I mean, ma'am, I mean boss, I mean puba!", "Sure.", "Alright.",
-    "I will do my best.", "How do I do that?", "OK"}; // random responses
+    "I will do my best.", "How do I do that?", "OK."}; // random responses
   
   private String[] auxVerbs = {"could", "can", "would", "will", "should", "shall", "could", "may", "may", "might", "did", "do", "did", "does", "was", "is", "were",
     "are", "was", "am", "had", "have", "had", "has", "had to", "must"};
   
   private String[] verbs = {"run", "throw", "eat", "drink", "hug", "love", "hate", "hit", "break", "work", "tally", "marry", "donate", "believe", "fill",
     "kill", "bring", "lie", "enjoy", "laugh", "play", "stand", "lay", "review", "write", "read", "live", "make", "understand", "bake", "open", "close", "let",
-    "know", "lead", "see", "shut", "think", "buy"}; // lists of auxiliary and regular verbs
+    "know", "lead", "see", "shut", "think", "buy", "go", "forgo"}; // lists of auxiliary and regular verbs
   
   private boolean nameInquire = false; // remembers if it has asked you your name recently
   
@@ -193,7 +193,7 @@ public class Magpie
       else if (find("what are me", lstatement) == 0)
         response = "I am a human.";
       else if (find("what", lstatement) == 0) // responds to different question words with default responses
-        response = "I don't know. What?";
+        response = "Chicken butt.";
       else if (find("who", lstatement) == 0)
         response = "You're mom.";
       else if (find("why", lstatement) == 0)
@@ -450,7 +450,7 @@ public class Magpie
   }
   
   
-  private String pastTense(String word)
+  private String pastTense(String word) // automatically uses grammar rules to change things to past tense
   {
     for (int i = 0; i < auxVerbs.length; i ++)
     {
@@ -461,6 +461,12 @@ public class Magpie
       return "played";
     if (word.equals("see"))
       return "saw";
+    if (word.equals("buy"))
+      return "bought";
+    if (word.equals("think"))
+      return "thought";
+    if (word.equals("go"))
+      return "went";
     else if (word.substring(word.length()-2).equals("et"))
       return word;
     else if (word.substring(word.length()-3).equals("ead"))
@@ -491,6 +497,8 @@ public class Magpie
       return word.substring(0, word.length()-2) + "oyed";
     else if (word.substring(word.length()-1).equals("y"))
       return word.substring(0, word.length()-1) + "ied";
+    else if (word.substring(word.length()-1).equals("o"))
+      return word + "ed";
     else if (word.substring(word.length()-1).equals("e"))
       return word + "d";
     else
@@ -498,7 +506,7 @@ public class Magpie
   }
   
   
-  private String plural(String word)
+  private String plural(String word) // same thing for plural
   {
     if (word.substring(word.length()-1).equals("f"))
       return word.substring(0, word.length()-1) + "ves";
@@ -510,8 +518,8 @@ public class Magpie
       return word.substring(0, word.length()-2) + "oys";
     else if (word.substring(word.length()-1).equals("y"))
       return word.substring(0, word.length()-1) + "ies";
-    else if (word.substring(word.length()-2).equals("us"))
-      return word.substring(0, word.length()-2) + "i";
+    else if (word.substring(word.length()-1).equals("o"))
+      return word + "es";
     else if (word.substring(word.length()-1).equals("s"))
       return word + "es";
     else
@@ -519,7 +527,7 @@ public class Magpie
   }
   
   
-  private String unContract(String statement)
+  private String unContract(String statement) // cahnges all contractions to full words
   {
     while (find("can't", statement) >= 0)
       statement = statement.substring(0, find("can't", statement)) + "cannot" + statement.substring(find("can't", statement)+5);

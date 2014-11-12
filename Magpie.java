@@ -28,16 +28,16 @@ public class Magpie
     "That depends. Who's asking?", "Affirmative.", "Negative.", "Affirmatory.", "I think so.", "Probably.", "Probably not."};
   
   private String[] confirmation = {"Okay.", "On it.", "Will do!", "Yes, sir - I mean, ma'am, I mean boss, I mean puba!", "Sure.", "Alright.",
-    "I will do my best.", "How do I do that?", "OK"}; // random responses
+    "I will do my best.", "How do I do that?", "OK."}; // random responses
   
   private String[] auxVerbs = {"could", "can", "would", "will", "should", "shall", "could", "may", "may", "might", "did", "do", "did", "does", "was", "is", "were",
     "are", "was", "am", "had", "have", "had", "has", "had to", "must"};
   
   private String[] verbs = {"run", "throw", "eat", "drink", "hug", "love", "hate", "hit", "break", "work", "tally", "marry", "donate", "believe", "fill",
     "kill", "bring", "lie", "enjoy", "laugh", "play", "stand", "lay", "review", "write", "read", "live", "make", "understand", "bake", "open", "close", "let",
-    "know", "lead", "see", "shut", "think", "buy"}; // lists of auxiliary and regular verbs
+    "know", "lead", "see", "shut", "think", "buy", "go", "forgo", "tell", "say", "win", "lose", "care"}; // lists of auxiliary and regular verbs
   
-  private boolean nameInquire = false; // remembers if it has asked you your name recently
+  private int nameInquire = 0; // remembers if it has asked you your name recently
   
   
   
@@ -59,11 +59,13 @@ public class Magpie
    */
   public String getResponse(String statement)
   {
+    x += (int)(Math.random()*2+2); // increments x at a fairly random rate
     String response = "";
     statement = statement.trim();
     String lstatement = statement.toLowerCase(); // I edit "lstatement" before processing, but I keep "statement" as the original statement verbatim
     lstatement = unContract(lstatement); // makes lstatement lowercase, from the computer's perspective, and have no contractions
     lstatement = toSecondPerson(lstatement);
+    lstatement = commaSplice(lstatement);
     
     if (statement.length() < 1)
       response = lonelyMessage[x%lonelyMessage.length]; // gives a certain random reply if box is empty
@@ -83,13 +85,13 @@ public class Magpie
     else if (find("you are", lstatement)>=0 && find("you are", lstatement)<lstatement.length()-9)
       response = nameUpdate(lstatement.substring(find("you are", lstatement)+8, lstatement.length()-1)); // if it sees "you are", assume you are stating your name
     
-    else if (nameInquire)
+    else if (nameInquire > 0 && !findVerb(lstatement))
       response = nameUpdate(lstatement.substring(0, lstatement.length()-1)); // if it asked you your name recently, assume the sentence is your name
       
-    else if (userName == "" && Math.random() < .5 && !nameInquire)
+    else if (userName == "" && Math.random() < .5 && nameInquire == 0)
     {
       response = "I don't think I caught your name."; // randomly asks you your name
-      nameInquire = true;
+      nameInquire = 2;
     }
     
     else if (find("my name", lstatement)>=0) // tells you the computer's name
@@ -231,14 +233,15 @@ public class Magpie
     else
       response = statementConversion(lstatement); // replies to declarative sentences with special conversion rules
     
-    if (!userName.equals("") && x%7 == 6) // addresses you by name sometimes.
+    if (!userName.equals("") && x%8 == 0) // addresses you by name sometimes.
       response = response.substring(0, response.length()-1) + ", " + userName + response.substring(response.length()-1, response.length());
     
     response = response.substring(0,1).toUpperCase() + response.substring(1); // Capitalizes response
     while (find("i", response) >= 0)
       response = response.substring(0,find("i", response)) + "I" + response.substring(find("i", response)+1); // changes all i to I
+    response = contract(response);
     
-    x += (int)(Math.random()*2+2); // increments x at a fairly random rate
+    if (nameInquire > 0)  nameInquire--; // gradually forgets asking about your name
     return response;
   }
   
@@ -277,11 +280,11 @@ public class Magpie
   
   private String nameUpdate(String newName)
   {
-    nameInquire = false;
+    nameInquire = 0;
     String response;
     newName = newName.substring(0,1).toUpperCase() + newName.substring(1); // capitalizes name
     if (!userName.equals("") && !userName.equals(newName)) // expresses confusion if you change your name
-      response = "I thought your name was " + newName + ".";
+      response = "I thought your name was " + userName + ".";
     else
       response = "Nice to meet you, " + newName + ". My name is Smitty Werbenjagermanjensen.";
     userName = newName; // memorizes name
@@ -387,7 +390,7 @@ public class Magpie
   
   private String statementConversion(String statement)
   {
-    switch (x%4) // there are four possible statement conversions:
+    switch (x%5) // there are four possible statement conversions:
     {
       case 1: // "Why is that true?"
         for (String v: auxVerbs) // if there is an auxiliary verb
@@ -417,20 +420,33 @@ public class Magpie
             return "Does " + statement.substring(0, find(plural(v), statement)) + v + statement.substring(find(plural(v), statement)+plural(v).length(), statement.length()-1) + "? Really?";
         }
         break;
-      case 3: // "I did not know that was true."
+      case 3: // "I did not realize that was true."
         for (String v: auxVerbs) // if there is an auxiliary verb
           if (find(v, statement) >= 0) // make it I did not know + past tense sentence
-            return "I did not know " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length());
+            return "I did not realize " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length());
         for (String v: verbs) // same goes for regular verbs if there is no auxiliary verb
         {
           if (find(v, statement) >= 0)
-            return "I did not know " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length());
+            return "I did not realize " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length());
           if (find(pastTense(v), statement) >= 0)
-            return "I did not know " + statement;
+            return "I did not realize " + statement;
           if (find(plural(v), statement) >= 0)
-            return "I did not know " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length());
+            return "I did not realize " + statement.substring(0, find(plural(v), statement)-1) + " " + pastTense(v) + statement.substring(find(plural(v), statement)+v.length(), statement.length());
         }
         break;
+      case 4: // tell me more about how that is true.
+        for (String v: auxVerbs) // if there is an auxiliary verb
+          if (find(v, statement) >= 0) // make it I did not know + past tense sentence
+            return "Tell me more about how " + statement;
+        for (String v: verbs) // same goes for regular verbs if there is no auxiliary verb
+        {
+          if (find(v, statement) >= 0)
+            return "Tell me more about how " + statement;
+          if (find(pastTense(v), statement) >= 0)
+            return "Tell me more about how " + statement;
+          if (find(plural(v), statement) >= 0)
+            return "Tell me more about how " + statement;
+        }
       default: // "Since when is that true?"
         for (String v: auxVerbs) // same idea as cases 1 and 2
           if (find(v, statement) >= 0)
@@ -452,7 +468,7 @@ public class Magpie
   
   private String pastTense(String word) // automatically uses grammar rules to change things to past tense
   {
-    for (int i = 0; i < auxVerbs.length; i ++)
+    for (int i = 0; i < auxVerbs.length; i ++) // if it is auxiliary, then since so many of them are irregular, I listed the past tense in the array
     {
       if (word.equals(auxVerbs[i]))
         return auxVerbs[(i/2)*2];
@@ -465,6 +481,16 @@ public class Magpie
       return "bought";
     if (word.equals("think"))
       return "thought";
+    if (word.equals("go"))
+      return "went";
+    if (word.equals("tell"))
+      return "told";
+    if (word.equals("say"))
+      return "said";
+    if (word.equals("win"))
+      return "won";
+    if (word.equals("lose"))
+      return "lost";
     else if (word.substring(word.length()-2).equals("et"))
       return word;
     else if (word.substring(word.length()-3).equals("ead"))
@@ -495,6 +521,8 @@ public class Magpie
       return word.substring(0, word.length()-2) + "oyed";
     else if (word.substring(word.length()-1).equals("y"))
       return word.substring(0, word.length()-1) + "ied";
+    else if (word.substring(word.length()-1).equals("o"))
+      return word + "ed";
     else if (word.substring(word.length()-1).equals("e"))
       return word + "d";
     else
@@ -514,8 +542,8 @@ public class Magpie
       return word.substring(0, word.length()-2) + "oys";
     else if (word.substring(word.length()-1).equals("y"))
       return word.substring(0, word.length()-1) + "ies";
-    else if (word.substring(word.length()-2).equals("us"))
-      return word.substring(0, word.length()-2) + "i";
+    else if (word.substring(word.length()-1).equals("o"))
+      return word + "es";
     else if (word.substring(word.length()-1).equals("s"))
       return word + "es";
     else
@@ -550,6 +578,36 @@ public class Magpie
     while (statement.indexOf("'ve") >= 0)
       statement = statement.substring(0, statement.indexOf("'ve")) + " have" + statement.substring(statement.indexOf("'ve")+3);
     
+    return statement;
+  }
+  
+  
+  private boolean findVerb(String sentence) // just sees if there is a verb in the sentence
+  {
+    for (String v: auxVerbs)
+      if (find(v, sentence) >= 0)
+        return true;
+    for (String v: verbs)
+    {
+      if (find(v, sentence) >= 0)
+        return true;
+      if (find(pastTense(v), sentence) >= 0)
+        return true;
+      if (find(plural(v), sentence) >= 0)
+        return true;
+    }
+    return false;
+  }
+  
+  
+  private String contract(String statement) // puts contractions back into the sentence
+  {
+    return statement;
+  }
+  
+  
+  private String commaSplice(String statement) // simplifies compound sentences
+  {
     return statement;
   }
 }
