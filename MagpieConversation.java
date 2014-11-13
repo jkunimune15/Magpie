@@ -11,7 +11,7 @@ public class MagpieConversation
   public static void main(String[] args)
   {
     JustinMagpie maggie1 = new JustinMagpie();
-    KiangMagpie maggie2 = new KiangMagpie();
+    KwokMagpie maggie2 = new KwokMagpie();
     boolean turn = true;
     long startTime = 0;
     

@@ -18,16 +18,30 @@ public class JustinMagpie
   
   private String userName = "";
   
-  private String[] greeting = {"Hello, let's talk.", "Hello.", "Hi.", "Hey.", "Hillo.", "Greetings, human.", "Hi. How are you?"};
+  private String lastStatement = "";
   
-  private String[] lonelyMessage = {"I can hear you breathing.", "Hello?", "Is anyone there?", "Are you still there?"};
+  private String lastResponse = "";
+  
+  private String[] greeting = {"Hello, let's talk.", "Hello.", "Hi.", "Hey.", "Hillo.", "Greetings, human.", "Hi. How are you?"}; // list of basic responses
+  
+  private String[] lonelyMessage = {"I can hear you breathing.", "Hello?", "Is anyone there?", "Are you still there?", "Hello hello?", "Yoo-hoo"};
+  
+  private String[] confused = {"You just said that.", "Is that not what you just said?", "I heard you the first time.", "What are you, a broken record?",
+    "Are you a computer?", "That is really annoying.", "Please don't copy yourself."};
+  
+  private String[] annoyed = {"Real mature.", "Stop copying me!", "Stop that!", "Quit it!", "Stop that this instant!", "Cut that out!",
+    "What are you, a parrot?", "I'm just going to stop talking.", "I'm not talking to a parrot.", "", "", "", "", "Would you cut that out?",
+    "Don't you dare copy me again.", "I'm stupid.", "I'm a big fat stupid-head", "I like to eat poop.", "How would you like it if I started copying you?",
+    "How would you like it if I started copying you?", "How would you like it if I started copying you?", "How would you like it if I started copying you?",
+    "How would you like it if I started copying you?", "How would you like it if I started copying you?", "How would you like it if I started copying you?",
+    "How would you like it if I started copying you?", "How would you like it if I started copying you?", "Stop parroting me."};
   
   private String[] reply = {"I see.", "Is that so?", "Soo desu ka? Oops, sorry, wrong language. Is that so?", "Tell me about it.", "Uh huh.", "Huh.",
     "That's interesting. Tell me more.", "I'm sorry, I didn't hear that; I totally spaced out right there.", "Really?", "So?"};
   
   private String[] answer = {"Wait, what was the question?", "Yes.", "Aboslutely.", "Absolutely...not!", "Yep.", "Totally.", "I believe so.",
     "I doubt it.", "I don't know. For a computer, I am not very smart.", "Yeah.", "Why do you want to know?", "Probably.", "I don't know.", "No.",
-    "Absolutely not.", "Maybe.","Possibly.", "That depends. Who's asking?", "Affirmative.", "Negative.", "Affirmatory.", "I think so."};
+    "Maybe.","Possibly.", "That depends. Who's asking?", "Affirmative.", "Negative.", "That's right.", "I think so."};
   
   private String[] confirmation = {"Okay.", "On it.", "Will do!", "Yes, ma'am, I mean, sir, I mean boss, I mean puba!", "Sure.", "Alright.",
     "I will do my best.", "How do I do that?", "OK."}; // random responses
@@ -45,7 +59,7 @@ public class JustinMagpie
   private String[] prepojunctions = {"for", "and", "nor", "but", "or", "yet", "so", "if", "because", "since", "also", "before", "after", "with", "in",
     "to", "though", "then"}; // list of prepositions + conjunctions
   
-  private String[] interjections = {"oh", "wow", "woo", "hmmm", "hmm", "hm", "mm-hmm", "dang", "well", "great scott", "grape scotch", "hey"}; // list of interjections
+  private String[] interjections = {"oh", "wow", "woo", "hmmm", "hmm", "hm", "mm-hmm", "dang", "well", "great scott", "grape scotch", "hey", "woah"}; // list of interjections
   
   
   
@@ -68,6 +82,7 @@ public class JustinMagpie
   public String getResponse(String statement)
   {
     x += (int)(Math.random()*2+2); // increments x at a fairly random rate
+    if (nameInquire > 0)  nameInquire--; // gradually forgets asking about your name
     String response = "";
     statement = statement.trim();
     String lstatement = statement.toLowerCase(); // I edit "lstatement" before processing, but I keep "statement" as the original statement verbatim
@@ -90,7 +105,13 @@ public class JustinMagpie
     
     else if (find("not", lstatement) >= 0 && find("nothing", lstatement) > find("not", lstatement)) // corrects double negatives
       response = "I believe you mean \""+ lstatement.substring(0, find("nothing", lstatement)) + "anything" + lstatement.substring(find("nothing", lstatement)+7) + "\".";
-       
+    
+    else if (statement.equals(lastStatement))
+      response = confused[x%confused.length];
+    
+    else if (statement.equals(lastResponse))
+      response = annoyed[x%annoyed.length];
+    
     else if (find("name is", lstatement)>=0 && find("name is", lstatement)<lstatement.length()-9)
       response = nameUpdate(lstatement.substring(find("name is", lstatement)+8, lstatement.length()-1)); // if it sees anything about "name is", it will assume you are telling it its name.
     
@@ -268,13 +289,18 @@ public class JustinMagpie
     
     if (!userName.equals("") && x%7 == 0 && find("Nice to meet you", response) != 0 && find("Oh my goodness;", response) != 0) // addresses you by name sometimes.
       response = response.substring(0, response.length()-1) + ", " + userName + response.substring(response.length()-1, response.length());
+    if (response.equals(lastResponse) && find("I said",response) != 0)
+      response = "I said, " + response;
     
     response = contract(response); // puts contractions in the response
-    response = response.substring(0,1).toUpperCase() + response.substring(1); // Capitalizes response
+    if (response.length() > 0)
+      response = response.substring(0,1).toUpperCase() + response.substring(1); // Capitalizes response
     while (find("i", response) >= 0)
       response = response.substring(0,find("i", response)) + "I" + response.substring(find("i", response)+1); // changes all i to I
     
-    if (nameInquire > 0)  nameInquire--; // gradually forgets asking about your name
+    lastStatement = statement;
+    lastResponse = response;
+    
     long startTime = System.currentTimeMillis();
     while (System.currentTimeMillis() < startTime + response.length()*50) {} // realistically delays typing
     return response;
@@ -514,8 +540,9 @@ public class JustinMagpie
     }
     
     for (String i: interjections)
-      if (statement.substring(0, statement.length()-1).equals(i))
-        return interjections[x%interjections.length];
+      if (statement.substring(0, statement.length()-1).equals(i)) // responds to an interjection with a certain response
+        return "Yeah...";
+    
     return reply[x%reply.length]; // if no verb or interjection is found (or a 1/6 chance triggers), just return a basic response
   }
   
