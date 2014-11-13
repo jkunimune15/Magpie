@@ -39,7 +39,8 @@ public class JustinMagpie
     "believe", "fill", "kill", "bring", "lie", "enjoy", "laugh", "play", "stand", "lay", "review", "write", "read", "live", "make", "understand", "bake",
     "open", "close", "let", "know", "lead", "see", "shut", "think", "buy", "go", "forgo", "tell", "say", "win", "lose", "care", "sell", "realize",
     "realise", "get", "dislike", "fart", "build", "dominate", "chill", "swallow", "explore", "surf", "give", "suck", "respond", "fix", "make", "meet",
-    "find", "thank", "excuse", "puncuated", "respond", "answer", "evade", "walk", "dodge", "amaze", "disappoint", "discover", "turn"}; // list of regular verbs
+    "find", "thank", "excuse", "puncuated", "respond", "answer", "evade", "walk", "dodge", "amaze", "disappoint", "discover", "turn", "change", "wait",
+    "flip", "wear", "tear", "care"}; // list of regular verbs
   
   private String[] prepojunctions = {"for", "and", "nor", "but", "or", "yet", "so", "if", "because", "since", "also", "before", "after", "with", "in",
     "to", "though", "then"}; // list of prepositions + conjunctions
@@ -96,15 +97,15 @@ public class JustinMagpie
     
     else if (nameInquire > 0 && !findVerb(lstatement))
       response = nameUpdate(lstatement.substring(0, lstatement.length()-1)); // if it asked you your name recently, assume the sentence is your name
+    
+    else if (find("my name", lstatement)>=0) // tells you the computer's name
+      response = "My name is Smitty Werbenjagermanjensen.";
       
     else if (userName == "" && Math.random() < .5 && nameInquire == 0)
     {
       response = "I don't think I caught your name."; // randomly asks you your name
       nameInquire = 2;
     }
-    
-    else if (find("my name", lstatement)>=0) // tells you the computer's name
-      response = "My name is Smitty Werbenjagermanjensen.";
     
     else if (find("good job", lstatement)>=0 || find("congratulations", lstatement)>=0) // responds to thank you
       response = "Why, thank you.";
@@ -554,6 +555,8 @@ public class JustinMagpie
       return word.substring(0, word.length()-4) + "uilt";
     else if (word.length() >= 3 && word.substring(word.length()-3).equals("eat"))
       return word.substring(0, word.length()-3) + "ate";
+    else if (word.length() >= 3 && word.substring(word.length()-3).equals("ear"))
+      return word.substring(0, word.length()-3) + "ore";
     else if (word.length() >= 3 && word.substring(word.length()-3).equals("ink"))
       return word.substring(0, word.length()-3) + "ank";
     else if (word.length() >= 3 && word.substring(word.length()-3).equals("ing"))

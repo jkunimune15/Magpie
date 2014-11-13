@@ -10,7 +10,7 @@
  * @author Laurie White
  * @version April 2012
  */
-public class Magpie
+public class JustinMagpie
 {
   private int x; // randomizes some stuff
     
@@ -200,6 +200,8 @@ public class Magpie
         response = "I am Smitty Werbenjagermanjensen.";
       else if (lstatement.equals("what is up?"))
         response = "The opposite of down. Just kidding. Not much.";
+      else if (lstatement.equals("what time is it?"))
+        response = "The time is "+(System.currentTimeMillis()/3600000)+":"+System.currentTimeMillis()/60000%60;
       else if (lstatement.equals("what do me do when life gives me lemons?"))
         response = "Don't make lemonade. Get mad! I don't want your damn lemons; what am I supposed to do with these? Demand to see life's manager! Make life rue the day it tried to give Smitty Werbenjagermanjensen lemons. Do you know who I am? I am number one!";
       else if (find("life, the universe, and the ultimate question", lstatement)>=0 || find("life the universe and the ultimate question", lstatement)>=0)
