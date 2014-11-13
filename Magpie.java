@@ -22,23 +22,24 @@ public class Magpie
   
   private String[] lonelyMessage = {"I can hear you breathing.", "Hello?", "Is anyone there?", "Are you still there?"};
   
-  private String[] reply = {"I see, I see.", "Is that so?", "Soo desu ka? Oops, sorry, wrong language. Is that so?", "Tell me about it.", "Uh huh.",
-    "That's interesting. Tell me more.", "I'm sorry, I didn't hear that; I totally spaced out right there.", "Really?"};
+  private String[] reply = {"I see.", "Is that so?", "Soo desu ka? Oops, sorry, wrong language. Is that so?", "Tell me about it.", "Uh huh.", "Huh.",
+    "That's interesting. Tell me more.", "I'm sorry, I didn't hear that; I totally spaced out right there.", "Really?", "So?"};
   
-  private String[] answer = {"Wait, what was the question?", "Yes.", "Aboslutely.", "Absolutely...not!", "Yep.", "Totally.", "I believe so.", "I doubt it.",
-    "I don't know. For a computer, I am not very smart.", "Yeah.", "Why do you want to know?", "Probably.", "I don't know.", "No.", "Absolutely not.", "Maybe.",
-    "Possibly.", "That depends. Who's asking?", "Affirmative.", "Negative.", "Affirmatory.", "I think so."};
+  private String[] answer = {"Wait, what was the question?", "Yes.", "Aboslutely.", "Absolutely...not!", "Yep.", "Totally.", "I believe so.",
+    "I doubt it.", "I don't know. For a computer, I am not very smart.", "Yeah.", "Why do you want to know?", "Probably.", "I don't know.", "No.",
+    "Absolutely not.", "Maybe.","Possibly.", "That depends. Who's asking?", "Affirmative.", "Negative.", "Affirmatory.", "I think so."};
   
   private String[] confirmation = {"Okay.", "On it.", "Will do!", "Yes, ma'am, I mean, sir, I mean boss, I mean puba!", "Sure.", "Alright.",
     "I will do my best.", "How do I do that?", "OK."}; // random responses
   
-  private String[] auxVerbs = {"could", "can", "would", "will", "should", "shall", "could", "may", "may", "might", "did", "do", "did", "does", "was", "is", "was",
-    "be","were", "are", "was", "am", "had", "have", "had", "has", "had to", "must"}; // list of auxiliary verbs with past tenses
+  private String[] auxVerbs = {"could", "can", "would", "will", "should", "shall", "could", "may", "may", "might", "did", "do", "did", "does", "was", "is",
+    "was", "be","were", "are", "was", "am", "had", "have", "had", "has", "had to", "must"}; // list of auxiliary verbs with past tenses
   
-  private String[] verbs = {"run", "throw", "eat", "drink", "hug", "like", "want", "love", "hate", "hit", "break", "work", "tally", "marry", "donate", "believe", "fill",
-    "kill", "bring", "lie", "enjoy", "laugh", "play", "stand", "lay", "review", "write", "read", "live", "make", "understand", "bake", "open", "close", "let",
-    "know", "lead", "see", "shut", "think", "buy", "go", "forgo", "tell", "say", "win", "lose", "care", "sell", "realize", "realise", "get", "dislike", "fart",
-    "build", "dominate", "chill", "swallow", "explore", "surf", "give", "suck", "respond", "fix", "make", "meet", "find"}; // list of regular verbs
+  private String[] verbs = {"run", "throw", "eat", "drink", "hug", "like", "want", "love", "hate", "hit", "break", "work", "tally", "marry", "donate",
+    "believe", "fill", "kill", "bring", "lie", "enjoy", "laugh", "play", "stand", "lay", "review", "write", "read", "live", "make", "understand", "bake",
+    "open", "close", "let", "know", "lead", "see", "shut", "think", "buy", "go", "forgo", "tell", "say", "win", "lose", "care", "sell", "realize",
+    "realise", "get", "dislike", "fart", "build", "dominate", "chill", "swallow", "explore", "surf", "give", "suck", "respond", "fix", "make", "meet",
+    "find", "thank", "excuse", "puncuated", "respond", "answer", "evade", "walk", "dodge", "amaze", "disappoint", "discover", "turn"}; // list of regular verbs
   
   private String[] prepojunctions = {"for", "and", "nor", "but", "or", "yet", "so", "if", "because", "since", "also", "before", "after", "with", "in",
     "to", "though", "then"}; // list of prepositions + conjunctions
@@ -67,9 +68,10 @@ public class Magpie
     String response = "";
     statement = statement.trim();
     String lstatement = statement.toLowerCase(); // I edit "lstatement" before processing, but I keep "statement" as the original statement verbatim
-    lstatement = unContract(lstatement); // makes lstatement lowercase, from the computer's perspective, and have no contractions
+    lstatement = unContract(lstatement); // makes lstatement lowercase, from the computer's perspective, and have no contractions, and have one clause
     lstatement = toSecondPerson(lstatement);
     lstatement = commaSplice(lstatement);
+    lstatement = unContract(lstatement); // uncontracts twice to make sure it didn't miss anything
     
     if (lstatement.length() < 1)
       response = lonelyMessage[x%lonelyMessage.length]; // gives a certain random reply if box is empty
@@ -88,9 +90,6 @@ public class Magpie
        
     else if (find("name is", lstatement)>=0 && find("name is", lstatement)<lstatement.length()-9)
       response = nameUpdate(lstatement.substring(find("name is", lstatement)+8, lstatement.length()-1)); // if it sees anything about "name is", it will assume you are telling it its name.
-
-    else if (find("name's", lstatement)>=0 && find("name's", lstatement)<lstatement.length()-9)
-      response = nameUpdate(lstatement.substring(find("name's", lstatement)+7, lstatement.length()-1)); // if it sees anything about "name is", it will assume you are telling it its name.
     
     else if (find("you are", lstatement)>=0 && find("you are", lstatement)<lstatement.length()-9 && nameInquire > 0)
       response = nameUpdate(lstatement.substring(find("you are", lstatement)+8, lstatement.length()-1)); // if it sees "you are", assume you are stating your name
@@ -193,13 +192,15 @@ public class Magpie
     
     else if (statement.substring(statement.length()-1).equals("?")) // answers interrogative sentences
     {
-      if (find("how are me", lstatement) == 0) // responds to basic questions
+      if (lstatement.equals("how are me?")) // responds to basic questions
         response = "I am fine. Thank you for asking.";
-      else if (find("how do me do", lstatement) == 0)
+      else if (lstatement.equals("how do me do?"))
         response = "I am fine. Thank you for asking.";
-      else if (find("who are me", lstatement) == 0)
+      else if (lstatement.equals("who are me?"))
         response = "I am Smitty Werbenjagermanjensen.";
-      else if (find("what do me do when life gives me lemons", lstatement) == 0)
+      else if (lstatement.equals("what is up?"))
+        response = "The opposite of down. Just kidding. Not much.";
+      else if (lstatement.equals("what do me do when life gives me lemons?"))
         response = "Don't make lemonade. Get mad! I don't want your damn lemons; what am I supposed to do with these? Demand to see life's manager! Make life rue the day it tried to give Smitty Werbenjagermanjensen lemons. Do you know who I am? I am number one!";
       else if (find("life, the universe, and the ultimate question", lstatement)>=0 || find("life the universe and the ultimate question", lstatement)>=0)
         response = "42!";
@@ -260,7 +261,7 @@ public class Magpie
     else
       response = statementConversion(lstatement); // replies to declarative sentences with special conversion rules
     
-    if (!userName.equals("") && x%7 == 0 && find("Nice to meet you", lstatement) != 0) // addresses you by name sometimes.
+    if (!userName.equals("") && x%7 == 0 && find("Nice to meet you", response) != 0 && find("Oh my goodness;", response) != 0) // addresses you by name sometimes.
       response = response.substring(0, response.length()-1) + ", " + userName + response.substring(response.length()-1, response.length());
     
     response = contract(response); // puts contractions in the response
@@ -270,7 +271,7 @@ public class Magpie
     
     if (nameInquire > 0)  nameInquire--; // gradually forgets asking about your name
     long startTime = System.currentTimeMillis();
-    while (System.currentTimeMillis() < startTime + response.length()*50) {}
+    while (System.currentTimeMillis() < startTime + response.length()*50) {} // realistically delays typing
     return response;
   }
   
@@ -312,7 +313,7 @@ public class Magpie
     nameInquire = 0;
     String response;
     for (int i = 1; i < newName.length()/2; i ++)
-      if (newName.substring(0,i).equals(newName.substring(newName.length()-i)))
+      if (newName.substring(0,i).equals(newName.substring(newName.length()-i))) // understands Last, First Last names (e.g. Bond. James Bond.)
         newName = newName.substring(i+1);
     newName = newName.trim();
     newName = newName.substring(0,1).toUpperCase() + newName.substring(1); // capitalizes name
@@ -326,6 +327,8 @@ public class Magpie
     
     if (!userName.equals("") && !userName.equals(newName)) // expresses confusion if you change your name
       response = "I thought your name was " + userName + ".";
+    if (userName.equalsIgnoreCase(newName))
+      response = "I already knew that.";
     else
       response = "Nice to meet you, " + newName + ". My name is Smitty Werbenjagermanjensen.";
 
@@ -465,15 +468,15 @@ public class Magpie
       case 3: // "I did not realize that was true."
         for (String v: auxVerbs) // if there is an auxiliary verb
           if (find(v, statement) >= 0) // make it I did not know + past tense sentence
-            return "I did not realize " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length());
+            return "I did not realize " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length()-1) + ".";
         for (String v: verbs) // same goes for regular verbs if there is no auxiliary verb
         {
           if (find(v, statement) >= 0)
-            return "I did not realize " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length());
+            return "I did not realize " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length()-1) + ".";
           if (find(pastTense(v), statement) >= 0)
-            return "I did not realize " + statement;
+            return "I did not realize " + statement.substring(0, statement.length()-1) + ".";
           if (find(plural(v), statement) >= 0)
-            return "I did not realize " + statement.substring(0, find(plural(v), statement)-1) + " " + pastTense(v) + statement.substring(find(plural(v), statement)+v.length());
+            return "I did not realize " + statement.substring(0, find(plural(v), statement)-1) + " " + pastTense(v) + statement.substring(find(plural(v), statement)+v.length(), statement.length()-1) + ".";
         }
         break;
       case 4: // tell me more about how that is true.
@@ -661,6 +664,8 @@ public class Magpie
       statement = statement.substring(0, statement.indexOf("'s an ")) + " is an " + statement.substring(statement.indexOf("'s an ")+6);
     while (statement.indexOf("'s the ") >= 0)
       statement = statement.substring(0, statement.indexOf("'s the ")) + " is the " + statement.substring(statement.indexOf("'s the ")+7);
+    if (!findVerb(statement) && statement.indexOf("'s") >= 0) // if there is no verb yet, then 's is probably a contraction
+      statement = statement.substring(0, statement.indexOf("'s")) + " is" + statement.substring(statement.indexOf("'s")+2); // replace it with "is"
     
     return statement;
   }
@@ -746,8 +751,12 @@ public class Magpie
       clause[c] = clause[c].trim(); // trims them all
     }
     
-    for (int i = 0; i < clause.length && specialCondition(clause); i ++) // eliminates clauses one-by-one until one is eliminated
-      for (String p: prepojunctions)
+    for (int i = 0; i < clause.length && specialCondition(clause); i ++)
+      if (clause[i].equals("smitty") || clause.equals("smitty werbenjagermanjensen")) // if it is my name
+        clause[i] = ""; // it is a dependent clause
+    
+    for (String p: prepojunctions)
+      for (int i = 0; i < clause.length && specialCondition(clause); i ++) // eliminates clauses one-by-one until one is eliminated
         if (find(p, clause[i]) == 0) // if it starst with a preposition or conjunction
           clause[i] = ""; // it is a dependent clause
     
