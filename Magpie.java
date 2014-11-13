@@ -13,6 +13,8 @@
 public class Magpie
 {
   private int x; // randomizes some stuff
+    
+  private int nameInquire = 0; // remembers if it has asked you your name recently
   
   private String userName = "";
   
@@ -20,24 +22,25 @@ public class Magpie
   
   private String[] lonelyMessage = {"Hello?", "Is anyone there?", "Are you still there?", "I can hear you breathing."};
   
-  private String[] reply = {"I see, I see.", "Is that so?", "That's cool.", "Soo desu ka? Oops, sorry, wrong language. Is that so?",
+  private String[] reply = {"I see, I see.", "Is that so?", "Soo desu ka? Oops, sorry, wrong language. Is that so?", "Tell me about it.", "Uh huh.",
     "That's interesting. Tell me more.", "I'm sorry, I didn't hear that; I totally spaced out right there.", "Really?"};
   
-  private String[] answer = {"Wait, what was the question?", "Yes.", "Aboslutely.", "Absolutely...not!", "Yep.",
-    "I don't know. For a computer, I am not very smart.", "Why do you want to know?", "I don't know.", "No.", "Absolutely not.", "Maybe.", "Possibly.",
-    "That depends. Who's asking?", "Affirmative.", "Negative.", "Affirmatory.", "I think so.", "Probably.", "Probably not."};
+  private String[] answer = {"Wait, what was the question?", "Yes.", "Aboslutely.", "Absolutely...not!", "Yep.", "Totally.", "I believe so.", "I doubt it.",
+    "I don't know. For a computer, I am not very smart.", "Yeah.", "Why do you want to know?", "Probably.", "I don't know.", "No.", "Absolutely not.", "Maybe.",
+    "Possibly.", "That depends. Who's asking?", "Affirmative.", "Negative.", "Affirmatory.", "I think so."};
   
-  private String[] confirmation = {"Okay.", "On it.", "Will do!", "Yes, sir - I mean, ma'am, I mean boss, I mean puba!", "Sure.", "Alright.",
+  private String[] confirmation = {"Okay.", "On it.", "Will do!", "Yes, ma'am, I mean, sir, I mean boss, I mean puba!", "Sure.", "Alright.",
     "I will do my best.", "How do I do that?", "OK."}; // random responses
   
-  private String[] auxVerbs = {"could", "can", "would", "will", "should", "shall", "could", "may", "may", "might", "did", "do", "did", "does", "was", "is", "were",
-    "are", "was", "am", "had", "have", "had", "has", "had to", "must"};
+  private String[] auxVerbs = {"could", "can", "would", "will", "should", "shall", "could", "may", "may", "might", "did", "do", "did", "does", "was", "is", "was",
+    "be","were", "are", "was", "am", "had", "have", "had", "has", "had to", "must"}; // list of auxiliary verbs with past tenses
   
   private String[] verbs = {"run", "throw", "eat", "drink", "hug", "love", "hate", "hit", "break", "work", "tally", "marry", "donate", "believe", "fill",
     "kill", "bring", "lie", "enjoy", "laugh", "play", "stand", "lay", "review", "write", "read", "live", "make", "understand", "bake", "open", "close", "let",
-    "know", "lead", "see", "shut", "think", "buy", "go", "forgo", "tell", "say", "win", "lose", "care"}; // lists of auxiliary and regular verbs
+    "know", "lead", "see", "shut", "think", "buy", "go", "forgo", "tell", "say", "win", "lose", "care", "sell", "realize", "realise", "get", "dislike", "fart",
+    "build", "dominate", "chill", "swallow", "explore", "surf"}; // list of regular verbs
   
-  private int nameInquire = 0; // remembers if it has asked you your name recently
+  private String[] prepojunctions = {"for", "and", "nor", "but", "or", "yet", "so", "if", "because", "since", "also", "before", "after", "with", "in", "to"}; // list of prepositions + conjunctions
   
   
   
@@ -71,16 +74,22 @@ public class Magpie
       response = lonelyMessage[x%lonelyMessage.length]; // gives a certain random reply if box is empty
     
     else if (letterCheck(statement.substring(statement.length()-1))) // checks last character to see if it is punctuation or a letter
-      response = "You should really punctuate your sentences properly";
+      response = "You should really punctuate your sentences properly ";
     
     else if (statement.substring(0, 1).compareTo(" ") > 64 && statement.substring(0, 1).compareTo(" ") < 91) // checks for first letter capitalization
       response = "you should really capitalize your sentences properly.";
     
     else if (find("shit", lstatement)>=0 || find("damn", lstatement)>=0 || find("frick", lstatement)>=0 || find("bitch", lstatement)>=0 || find("crap", lstatement)>=0 || find("oh your god", lstatement)>=0)
       response = "Watch your damn language!"; // responds to cursing
+    
+    else if (find("not", lstatement) >= 0 && find("nothing", lstatement) > find("not", lstatement)) // corrects double negatives
+      response = "I believe you mean \""+ lstatement.substring(0, find("nothing", lstatement)) + "anything" + lstatement.substring(find("nothing", lstatement)+7) + "\".";
        
     else if (find("name is", lstatement)>=0 && find("name is", lstatement)<lstatement.length()-9)
       response = nameUpdate(lstatement.substring(find("name is", lstatement)+8, lstatement.length()-1)); // if it sees anything about "name is", it will assume you are telling it its name.
+
+    else if (find("name's", lstatement)>=0 && find("name's", lstatement)<lstatement.length()-9)
+      response = nameUpdate(lstatement.substring(find("name's", lstatement)+7, lstatement.length()-1)); // if it sees anything about "name is", it will assume you are telling it its name.
     
     else if (find("you are", lstatement)>=0 && find("you are", lstatement)<lstatement.length()-9)
       response = nameUpdate(lstatement.substring(find("you are", lstatement)+8, lstatement.length()-1)); // if it sees "you are", assume you are stating your name
@@ -233,15 +242,17 @@ public class Magpie
     else
       response = statementConversion(lstatement); // replies to declarative sentences with special conversion rules
     
-    if (!userName.equals("") && x%8 == 0) // addresses you by name sometimes.
+    if (!userName.equals("") && x%7 == 0) // addresses you by name sometimes.
       response = response.substring(0, response.length()-1) + ", " + userName + response.substring(response.length()-1, response.length());
     
+    response = contract(response); // puts contractions in the response
     response = response.substring(0,1).toUpperCase() + response.substring(1); // Capitalizes response
     while (find("i", response) >= 0)
       response = response.substring(0,find("i", response)) + "I" + response.substring(find("i", response)+1); // changes all i to I
-    response = contract(response);
     
     if (nameInquire > 0)  nameInquire--; // gradually forgets asking about your name
+    long startTime = System.currentTimeMillis();
+    while (System.currentTimeMillis() < startTime + response.length()*20) {}
     return response;
   }
   
@@ -282,13 +293,29 @@ public class Magpie
   {
     nameInquire = 0;
     String response;
+    for (int i = 1; i < newName.length()/2; i ++)
+      if (newName.substring(0,i).equals(newName.substring(newName.length()-i)))
+        newName = newName.substring(i+1);
+    newName = newName.trim();
     newName = newName.substring(0,1).toUpperCase() + newName.substring(1); // capitalizes name
     if (!userName.equals("") && !userName.equals(newName)) // expresses confusion if you change your name
       response = "I thought your name was " + userName + ".";
     else
-      response = "Nice to meet you, " + newName + ". My name is Smitty Werbenjagermanjensen.";
+      response = "Nice to meet you. My name is Smitty Werbenjagermanjensen.";
+    
+    if (newName.equalsIgnoreCase("James Bond")) // responds to specific names
+      newName = "Agent 007";
+    if (newName.equalsIgnoreCase("Darth Vader"))
+      newName = "my lord";
+    if (newName.equalsIgnoreCase("Yoda") || newName.equalsIgnoreCase("Master Yoda"))
+      newName = "master";
+    if (newName.equalsIgnoreCase("Justin") || newName.equalsIgnoreCase("Justin Kunimune") || newName.equalsIgnoreCase("Nitsuj"))
+    {
+      response = "Oh my goodness; I've heard such amazing things about you, sir! It is so good to finally meet you!";
+      newName = "sir";
+    }
+    
     userName = newName; // memorizes name
-    userName = userName.substring(0,1).toUpperCase() + userName.substring(1); // capitalizes name
     return response;
   }
   
@@ -366,14 +393,6 @@ public class Magpie
         newStatement += "am";
         i += 3;
       }
-      else if (find("smitty.", statement.substring(i)) == 0) // ignore if it addresses me by name
-      {
-        i += 6;
-      }
-      else if (find("smitty,", statement.substring(i)) == 0) // ignore if it addresses me by name
-      {
-        i += 6;
-      }
       else // if there is no name, just add letters until you hit the end of the word
       {
         while (letterCheck(statement.substring(i)))
@@ -390,7 +409,7 @@ public class Magpie
   
   private String statementConversion(String statement)
   {
-    switch (x%5) // there are four possible statement conversions:
+    switch (x%6) // there are four possible statement conversions:
     {
       case 1: // "Why is that true?"
         for (String v: auxVerbs) // if there is an auxiliary verb
@@ -423,31 +442,31 @@ public class Magpie
       case 3: // "I did not realize that was true."
         for (String v: auxVerbs) // if there is an auxiliary verb
           if (find(v, statement) >= 0) // make it I did not know + past tense sentence
-            return "I did not realize " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length());
+            return "I did not realize " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length());
         for (String v: verbs) // same goes for regular verbs if there is no auxiliary verb
         {
           if (find(v, statement) >= 0)
-            return "I did not realize " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length());
+            return "I did not realize " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length());
           if (find(pastTense(v), statement) >= 0)
             return "I did not realize " + statement;
           if (find(plural(v), statement) >= 0)
-            return "I did not realize " + statement.substring(0, find(plural(v), statement)-1) + " " + pastTense(v) + statement.substring(find(plural(v), statement)+v.length(), statement.length());
+            return "I did not realize " + statement.substring(0, find(plural(v), statement)-1) + " " + pastTense(v) + statement.substring(find(plural(v), statement)+v.length());
         }
         break;
       case 4: // tell me more about how that is true.
         for (String v: auxVerbs) // if there is an auxiliary verb
-          if (find(v, statement) >= 0) // make it I did not know + past tense sentence
-            return "Tell me more about how " + statement;
+          if (find(v, statement) >= 0) // make it I did not know + past tense sentence (the verb doesn't matter - it just matters if there is a verb)
+            return "What makes you think " + statement.substring(0, statement.length()-1) + "?";
         for (String v: verbs) // same goes for regular verbs if there is no auxiliary verb
         {
           if (find(v, statement) >= 0)
-            return "Tell me more about how " + statement;
+            return "What makes you think " + statement.substring(0, statement.length()-1) + "?";
           if (find(pastTense(v), statement) >= 0)
-            return "Tell me more about how " + statement;
+            return "What makes you think " + statement.substring(0, statement.length()-1) + "?";
           if (find(plural(v), statement) >= 0)
-            return "Tell me more about how " + statement;
+            return "What makes you think " + statement.substring(0, statement.length()-1) + "?";
         }
-      default: // "Since when is that true?"
+      case 5: // "Since when is that true?"
         for (String v: auxVerbs) // same idea as cases 1 and 2
           if (find(v, statement) >= 0)
             return "Since when " + v + " " + statement.substring(0, find(v, statement)-1) + statement.substring(find(v, statement)+v.length(), statement.length()-1) + "?";
@@ -462,7 +481,7 @@ public class Magpie
         }
         break;
     }    
-    return reply[x%reply.length]; // if no verb is found, just return a basic response
+    return reply[x%reply.length]; // if no verb is found (or a 1/6 chance triggers), just return a basic response
   }
   
   
@@ -483,47 +502,51 @@ public class Magpie
       return "thought";
     if (word.equals("go"))
       return "went";
-    if (word.equals("tell"))
-      return "told";
     if (word.equals("say"))
       return "said";
     if (word.equals("win"))
       return "won";
     if (word.equals("lose"))
       return "lost";
+    if (word.equals("get"))
+      return "got";
     else if (word.substring(word.length()-2).equals("et"))
       return word;
     else if (word.substring(word.length()-3).equals("ead"))
       return word;
     else if (word.substring(word.length()-3).equals("ut"))
       return word;
-    else if (word.substring(word.length()-3).equals("eat"))
+    else if (word.length() == 4 && word.substring(1).equals("ell"))
+      return word.substring(0, 1) + "old";
+    else if (word.length() >= 4 && word.substring(word.length()-4).equals("uild"))
+      return word.substring(0, word.length()-4) + "uilt";
+    else if (word.length() >= 3 && word.substring(word.length()-3).equals("eat"))
       return word.substring(0, word.length()-3) + "ate";
-    else if (word.substring(word.length()-2).equals("in"))
-      return word.substring(0, word.length()-3) + "an";
-    else if (word.substring(word.length()-3).equals("ink"))
+    else if (word.length() >= 3 && word.substring(word.length()-3).equals("ink"))
       return word.substring(0, word.length()-3) + "ank";
-    else if (word.substring(word.length()-3).equals("ing"))
+    else if (word.length() >= 3 && word.substring(word.length()-3).equals("ing"))
       return word.substring(0, word.length()-3) + "ang";
-    else if (word.substring(word.length()-3).equals("and"))
+    else if (word.length() >= 3 && word.substring(word.length()-3).equals("and"))
       return word.substring(0, word.length()-3) + "ood";
-    else if (word.substring(word.length()-2).equals("ow"))
-      return word.substring(0, word.length()-2) + "ew";
-    else if (word.substring(word.length()-3).equals("ite"))
+    else if (word.length() >= 3 && word.substring(word.length()-3).equals("ite"))
       return word.substring(0, word.length()-3) + "ote";
-    else if (word.substring(word.length()-2).equals("un"))
+    else if (word.length() >= 2 && word.substring(word.length()-2).equals("un"))
       return word.substring(0, word.length()-2) + "an";
-    else if (word.substring(word.length()-2).equals("ay"))
+    else if (word.length() >= 2 && word.substring(word.length()-2).equals("in"))
+      return word.substring(0, word.length()-2) + "an";
+    else if (word.length() >= 2 && word.substring(word.length()-2).equals("ow"))
+      return word.substring(0, word.length()-2) + "ew";
+    else if (word.length() >= 2 && word.substring(word.length()-2).equals("ay"))
       return word.substring(0, word.length()-2) + "aid";
-    else if (word.substring(word.length()-2).equals("ey"))
+    else if (word.length() >= 2 && word.substring(word.length()-2).equals("ey"))
       return word.substring(0, word.length()-2) + "eyed";
-    else if (word.substring(word.length()-2).equals("oy"))
+    else if (word.length() >= 2 && word.substring(word.length()-2).equals("oy"))
       return word.substring(0, word.length()-2) + "oyed";
-    else if (word.substring(word.length()-1).equals("y"))
+    else if (word.length() >= 1 && word.substring(word.length()-1).equals("y"))
       return word.substring(0, word.length()-1) + "ied";
-    else if (word.substring(word.length()-1).equals("o"))
+    else if (word.length() >= 1 && word.substring(word.length()-1).equals("o"))
       return word + "ed";
-    else if (word.substring(word.length()-1).equals("e"))
+    else if (word.length() >= 1 && word.substring(word.length()-1).equals("e"))
       return word + "d";
     else
       return word + "ed";
@@ -559,12 +582,23 @@ public class Magpie
       statement = statement.substring(0, find("won't", statement)) + "will not" + statement.substring(find("won't", statement)+5);
     while (find("shan't", statement) >= 0)
       statement = statement.substring(0, find("shan't", statement)) + "shall not" + statement.substring(find("shan't", statement)+6);
-    while (find("ain't", statement) >= 0)
-      statement = statement.substring(0, find("ain't", statement)) + "are not" + statement.substring(find("ain't", statement)+5);
     while (find("let's", statement) >= 0)
       statement = statement.substring(0, find("let's", statement)) + "let us" + statement.substring(find("let's", statement)+5);
     while (find("i'm", statement) >= 0)
       statement = statement.substring(0, find("i'm", statement)) + "i am" + statement.substring(find("i'm", statement)+3);
+    while (find("it's", statement) >= 0)
+      statement = statement.substring(0, find("it's", statement)) + "it is" + statement.substring(find("it's", statement)+4);
+    while (find("ain't", statement) >= 0)
+    {
+      if (find("ain't", statement) > 1 && statement.substring(find("ain't", statement)-2).equals("i")) // ain't becomes a variety of verbs based on the previous word
+        statement = statement.substring(0, find("ain't", statement)) + "am not" + statement.substring(find("ain't", statement)+5);
+      else if (find("ain't", statement) > 3 && statement.substring(find("ain't", statement)-4).equals("you"))
+        statement = statement.substring(0, find("ain't", statement)) + "are not" + statement.substring(find("ain't", statement)+5);
+      else if (find("ain't", statement) > 1 && statement.substring(find("ain't", statement)-2).equals("s"))
+        statement = statement.substring(0, find("ain't", statement)) + "are not" + statement.substring(find("ain't", statement)+5);
+      else
+        statement = statement.substring(0, find("ain't", statement)) + "is not" + statement.substring(find("ain't", statement)+5);
+    }
     while (statement.indexOf("n't") >= 0)
       statement = statement.substring(0, statement.indexOf("n't")) + " not" + statement.substring(statement.indexOf("n't")+3);
     while (statement.indexOf("'re") >= 0)
@@ -572,11 +606,51 @@ public class Magpie
     while (statement.indexOf("'ll") >= 0)
       statement = statement.substring(0, statement.indexOf("'ll")) + " will" + statement.substring(statement.indexOf("'ll")+3);
     while (statement.indexOf("'d") >= 0)
-      statement = statement.substring(0, statement.indexOf("'d")) + " did" + statement.substring(statement.indexOf("'d")+2);
+      statement = statement.substring(0, statement.indexOf("'d")) + " would" + statement.substring(statement.indexOf("'d")+2);
     while (statement.indexOf("'t") >= 0)
       statement = statement.substring(0, statement.indexOf("'t")) + "it " + statement.substring(statement.indexOf("'t")+2);
+    while (statement.indexOf("in'") >= 0)
+      statement = statement.substring(0, statement.indexOf("in'")) + "ing" + statement.substring(statement.indexOf("in'")+3);
     while (statement.indexOf("'ve") >= 0)
-      statement = statement.substring(0, statement.indexOf("'ve")) + " have" + statement.substring(statement.indexOf("'ve")+3);
+      statement = statement.substring(0, statement.indexOf("'ve")) + " have" + statement.substring(statement.indexOf("'ve")+3); // 's usually only changes if there is an article after it
+    while (statement.indexOf("'s a ") >= 0)
+      statement = statement.substring(0, statement.indexOf("'s a ")) + " is a " + statement.substring(statement.indexOf("'s a ")+5);
+    while (statement.indexOf("'s an ") >= 0)
+      statement = statement.substring(0, statement.indexOf("'s an ")) + " is an " + statement.substring(statement.indexOf("'s an ")+6);
+    while (statement.indexOf("'s the ") >= 0)
+      statement = statement.substring(0, statement.indexOf("'s the ")) + " is the " + statement.substring(statement.indexOf("'s the ")+7);
+    
+    return statement;
+  }
+  
+  
+  private String contract(String statement) // puts some simple contractions back into the sentence
+  {
+    while (find("cannot", statement) >= 0)
+      statement = statement.substring(0, find("cannot", statement)) + "can't" + statement.substring(find("cannot", statement)+6);
+    while (find("will not", statement) >= 0)
+      statement = statement.substring(0, find("will not", statement)) + "won't" + statement.substring(find("will not", statement)+8);
+    while (find("shall not", statement) >= 0)
+      statement = statement.substring(0, find("shall not", statement)) + "shan't" + statement.substring(find("shall not", statement)+9);
+    while (find("let us", statement) >= 0)
+      statement = statement.substring(0, find("let us", statement)) + "let's" + statement.substring(find("let us", statement)+6);
+    while (find("i am", statement) >= 0)
+      statement = statement.substring(0, find("i am", statement)) + "i'm" + statement.substring(find("i am", statement)+4);
+    while (find("it is", statement) >= 0)
+      statement = statement.substring(0, find("it is", statement)) + "it's" + statement.substring(find("it is", statement)+5);
+    while (find("it was", statement) >= 0)
+      statement = statement.substring(0, find("it was", statement)) + "'twas" + statement.substring(find("it was", statement)+6);
+    for (String v: auxVerbs)
+      while (statement.indexOf(v+" not") >= 0)
+        statement = statement.substring(0, statement.indexOf(v+" not")) + v+"n't" + statement.substring(statement.indexOf(v+" not")+v.length()+4);
+    while (statement.indexOf("'ve") >= 0)
+      statement = statement.substring(0, statement.indexOf("'ve")) + " have" + statement.substring(statement.indexOf("'ve")+3); // 's usually only changes if there is an article after it
+    while (statement.indexOf(" is a ") >= 0)
+      statement = statement.substring(0, statement.indexOf(" is a ")) + "'s a " + statement.substring(statement.indexOf(" is a ")+6);
+    while (statement.indexOf(" is an ") >= 0)
+      statement = statement.substring(0, statement.indexOf(" is an ")) + "'s an " + statement.substring(statement.indexOf(" is an ")+7);
+    while (statement.indexOf(" is the ") >= 0)
+      statement = statement.substring(0, statement.indexOf(" is the ")) + "'s the " + statement.substring(statement.indexOf(" is the ")+8);
     
     return statement;
   }
@@ -597,12 +671,6 @@ public class Magpie
         return true;
     }
     return false;
-  }
-  
-  
-  private String contract(String statement) // puts contractions back into the sentence
-  {
-    return statement;
   }
   
   
