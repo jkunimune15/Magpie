@@ -11,7 +11,7 @@ public class MagpieConversation
   public static void main(String[] args)
   {
     JustinMagpie maggie1 = new JustinMagpie();
-    KwokMagpie maggie2 = new KwokMagpie();
+    JustinMagpie maggie2 = new JustinMagpie();
     boolean turn = true;
     long startTime = 0;
     
@@ -19,8 +19,8 @@ public class MagpieConversation
     
     while (!statement.equalsIgnoreCase("bye."))
     {
-      if (turn)  System.out.print("Magpie 1: ");
-      else       System.out.print("Magpie 2: ");
+      if (turn)  System.out.print("Nitsuj: ");
+      else       System.out.print("Noved: ");
       System.out.println(statement);
       startTime = System.currentTimeMillis();
       while (System.currentTimeMillis() < startTime + 3000) {}

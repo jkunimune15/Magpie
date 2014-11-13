@@ -54,12 +54,15 @@ public class JustinMagpie
     "open", "close", "let", "know", "lead", "see", "shut", "think", "buy", "go", "forgo", "tell", "say", "win", "lose", "care", "sell", "realize",
     "realise", "get", "dislike", "fart", "build", "dominate", "chill", "swallow", "explore", "surf", "give", "suck", "respond", "fix", "make", "meet",
     "find", "thank", "excuse", "puncuated", "respond", "answer", "evade", "walk", "dodge", "amaze", "disappoint", "discover", "turn", "change", "wait",
-    "flip", "wear", "tear", "care"}; // list of regular verbs
+    "flip", "wear", "tear", "care", "quit", "stop", "forget", "copy", "start", "talk", "speak"}; // list of regular verbs
   
   private String[] prepojunctions = {"for", "and", "nor", "but", "or", "yet", "so", "if", "because", "since", "also", "before", "after", "with", "in",
     "to", "though", "then"}; // list of prepositions + conjunctions
   
-  private String[] interjections = {"oh", "wow", "woo", "hmmm", "hmm", "hm", "mm-hmm", "dang", "well", "great scott", "grape scotch", "hey", "woah"}; // list of interjections
+  private String[] interjections = {"oh", "o", "wow", "woo", "hmmm", "hmm", "hm", "mm-hmm", "dang", "well", "great scott", "grape scotch", "hey", "woah", "yay",
+    "ah", "alas", "eh", "er", "ouch", "uh"}; // list of interjections
+  
+  private String[] emoticons = {":)", ":D", ":P", "B)", "<3", ":3", "}:|", ":\\", ":|", ":(", ";)", ";D"};
   
   
   
@@ -184,6 +187,9 @@ public class JustinMagpie
     else if (find("noved", lstatement)>=0)
       response = "Noved? I've heard of that guy. He's kind of cool, but nowhere near as cool as Nitsuj.";
     
+    else if (find("cake", lstatement)>=0)
+      response = "The cake is a lie.";
+    
     else if (find("brain fart", lstatement)>=0)
       response = "I hate brain farts. Did you know there's a word for it? \"Presque Vu.\" It's French, I believe.";
     
@@ -226,6 +232,8 @@ public class JustinMagpie
         response = "The opposite of down. Just kidding. Not much.";
       else if (lstatement.equals("what time is it?"))
         response = "The time is "+(System.currentTimeMillis()/3600000)+":"+System.currentTimeMillis()/60000%60;
+      else if (lstatement.equals("what is pi?"))
+        response = "Delicious.";
       else if (lstatement.equals("what do me do when life gives me lemons?"))
         response = "Don't make lemonade. Get mad! I don't want your damn lemons; what am I supposed to do with these? Demand to see life's manager! Make life rue the day it tried to give Smitty Werbenjagermanjensen lemons. Do you know who I am? I am number one!";
       else if (find("life, the universe, and the ultimate question", lstatement)>=0 || find("life the universe and the ultimate question", lstatement)>=0)
@@ -291,12 +299,13 @@ public class JustinMagpie
       response = response.substring(0, response.length()-1) + ", " + userName + response.substring(response.length()-1, response.length());
     if (response.equals(lastResponse) && find("I said",response) != 0)
       response = "I said, " + response;
-    
     response = contract(response); // puts contractions in the response
     if (response.length() > 0)
       response = response.substring(0,1).toUpperCase() + response.substring(1); // Capitalizes response
     while (find("i", response) >= 0)
       response = response.substring(0,find("i", response)) + "I" + response.substring(find("i", response)+1); // changes all i to I
+    if (Math.random() < .2)
+      response = response + " " + emoticons[x%emoticons.length];
     
     lastStatement = statement;
     lastResponse = response;
@@ -570,13 +579,15 @@ public class JustinMagpie
       return "won";
     if (word.equals("lose"))
       return "lost";
-    if (word.equals("get"))
-      return "got";
     if (word.equals("give"))
       return "gave";
     if (word.equals("make"))
       return "made";
+    if (word.equals("speak"))
+      return "spoke";
     else if (word.substring(word.length()-2).equals("et"))
+      return word;
+    else if (word.substring(word.length()-2).equals("it"))
       return word;
     else if (word.substring(word.length()-3).equals("ead"))
       return word;
@@ -586,6 +597,8 @@ public class JustinMagpie
       return word.substring(0, 1) + "old";
     else if (word.length() >= 4 && word.substring(word.length()-4).equals("uild"))
       return word.substring(0, word.length()-4) + "uilt";
+    else if (word.length() >= 3 && word.substring(word.length()-3).equals("get"))
+      return word.substring(0, word.length()-3) + "got";
     else if (word.length() >= 3 && word.substring(word.length()-3).equals("eat"))
       return word.substring(0, word.length()-3) + "ate";
     else if (word.length() >= 3 && word.substring(word.length()-3).equals("ear"))
@@ -631,6 +644,8 @@ public class JustinMagpie
       return "was";
     if (word.equals("do"))
       return "does";
+    if (word.equals("have"))
+      return "has";
     for (String v: auxVerbs) // if it is auxiliary, then the plural is probably itself
     {
       if (word.equals(v))
