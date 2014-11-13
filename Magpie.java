@@ -20,7 +20,7 @@ public class Magpie
   
   private String[] greeting = {"Hello, let's talk.", "Hello.", "Hi.", "Hey.", "Hillo.", "Greetings, human.", "Hi. How are you?"};
   
-  private String[] lonelyMessage = {"Hello?", "Is anyone there?", "Are you still there?", "I can hear you breathing."};
+  private String[] lonelyMessage = {"I can hear you breathing.", "Hello?", "Is anyone there?", "Are you still there?"};
   
   private String[] reply = {"I see, I see.", "Is that so?", "Soo desu ka? Oops, sorry, wrong language. Is that so?", "Tell me about it.", "Uh huh.",
     "That's interesting. Tell me more.", "I'm sorry, I didn't hear that; I totally spaced out right there.", "Really?"};
@@ -35,12 +35,13 @@ public class Magpie
   private String[] auxVerbs = {"could", "can", "would", "will", "should", "shall", "could", "may", "may", "might", "did", "do", "did", "does", "was", "is", "was",
     "be","were", "are", "was", "am", "had", "have", "had", "has", "had to", "must"}; // list of auxiliary verbs with past tenses
   
-  private String[] verbs = {"run", "throw", "eat", "drink", "hug", "love", "hate", "hit", "break", "work", "tally", "marry", "donate", "believe", "fill",
+  private String[] verbs = {"run", "throw", "eat", "drink", "hug", "like", "want", "love", "hate", "hit", "break", "work", "tally", "marry", "donate", "believe", "fill",
     "kill", "bring", "lie", "enjoy", "laugh", "play", "stand", "lay", "review", "write", "read", "live", "make", "understand", "bake", "open", "close", "let",
     "know", "lead", "see", "shut", "think", "buy", "go", "forgo", "tell", "say", "win", "lose", "care", "sell", "realize", "realise", "get", "dislike", "fart",
-    "build", "dominate", "chill", "swallow", "explore", "surf"}; // list of regular verbs
+    "build", "dominate", "chill", "swallow", "explore", "surf", "give", "suck", "respond", "fix", "make", "meet", "find"}; // list of regular verbs
   
-  private String[] prepojunctions = {"for", "and", "nor", "but", "or", "yet", "so", "if", "because", "since", "also", "before", "after", "with", "in", "to"}; // list of prepositions + conjunctions
+  private String[] prepojunctions = {"for", "and", "nor", "but", "or", "yet", "so", "if", "because", "since", "also", "before", "after", "with", "in",
+    "to", "though", "then"}; // list of prepositions + conjunctions
   
   
   
@@ -70,7 +71,7 @@ public class Magpie
     lstatement = toSecondPerson(lstatement);
     lstatement = commaSplice(lstatement);
     
-    if (statement.length() < 1)
+    if (lstatement.length() < 1)
       response = lonelyMessage[x%lonelyMessage.length]; // gives a certain random reply if box is empty
     
     else if (letterCheck(statement.substring(statement.length()-1))) // checks last character to see if it is punctuation or a letter
@@ -91,7 +92,7 @@ public class Magpie
     else if (find("name's", lstatement)>=0 && find("name's", lstatement)<lstatement.length()-9)
       response = nameUpdate(lstatement.substring(find("name's", lstatement)+7, lstatement.length()-1)); // if it sees anything about "name is", it will assume you are telling it its name.
     
-    else if (find("you are", lstatement)>=0 && find("you are", lstatement)<lstatement.length()-9)
+    else if (find("you are", lstatement)>=0 && find("you are", lstatement)<lstatement.length()-9 && nameInquire > 0)
       response = nameUpdate(lstatement.substring(find("you are", lstatement)+8, lstatement.length()-1)); // if it sees "you are", assume you are stating your name
     
     else if (nameInquire > 0 && !findVerb(lstatement))
@@ -148,9 +149,6 @@ public class Magpie
     else if (find("try", lstatement)>=0) // responds to a whole bunch of different keywords
       response = "No! Do or do not. There is no try.";
     
-    else if (find("life, the universe, and the ultimate question", lstatement)>=0 || find("life the universe and the ultimate question", lstatement)>=0)
-      response = "42!";
-    
     else if (find("justin", lstatement)>=0)
       response = "Justin? I've heard of that guy! He's so cool! I wish I could be him. Did you know he is ranked the most awesome guy in the world. I read that on the internet, so it must be true.";
     
@@ -197,10 +195,14 @@ public class Magpie
     {
       if (find("how are me", lstatement) == 0) // responds to basic questions
         response = "I am fine. Thank you for asking.";
-      else if (find("how do I do", lstatement) == 0)
+      else if (find("how do me do", lstatement) == 0)
         response = "I am fine. Thank you for asking.";
       else if (find("who are me", lstatement) == 0)
         response = "I am Smitty Werbenjagermanjensen.";
+      else if (find("what do me do when life gives me lemons", lstatement) == 0)
+        response = "Don't make lemonade. Get mad! I don't want your damn lemons; what am I supposed to do with these? Demand to see life's manager! Make life rue the day it tried to give Smitty Werbenjagermanjensen lemons. Do you know who I am? I am number one!";
+      else if (find("life, the universe, and the ultimate question", lstatement)>=0 || find("life the universe and the ultimate question", lstatement)>=0)
+        response = "42!";
       else if (find("what are me", lstatement) == 0)
         response = "I am a human.";
       else if (find("what", lstatement) == 0) // responds to different question words with default responses
@@ -222,13 +224,29 @@ public class Magpie
       else if (find("how", lstatement) == 0) // if it starts with "how"
       {
         int end = 4;
-        while (letterCheck(lstatement.substring(end))) // go to next space to find next word
+        while (letterCheck(lstatement.substring(end, end+1))) // go to next space to find next word
           end++;
         response = lstatement.substring(4, end) + " enough."; // make the default response ___ enough (long enough, far enough, etc.)
         
         for (String v: auxVerbs) // if next word is an auxiliary verb,
-          if (find(v, lstatement) == 4) // "how" has a different meaning
-            response = "How "+v+" anything?"; // so give a different response
+        {
+          if (find(pastTense(v), lstatement) == 4) // "how" has a different meaning
+          {
+            response = "How "+plural(v); // so give a different response
+            if (find("you", lstatement) == end+1 || find("me", lstatement) == end+1 || find("they", lstatement) == end+1 ||
+                find("he", lstatement) == end+1 || find("she", lstatement) == end+1)
+              response += " anyone?"; // toggles anyone and anything depending on if it thinks the subject is a person
+            else  response += "anything?";
+          }
+          if (find(v, lstatement) == 4) // same thing for present tense
+          {
+            response = "How "+plural(v);
+            if (find("you", lstatement) == end+1 || find("me", lstatement) == end+1 || find("they", lstatement) == end+1 ||
+                find("he", lstatement) == end+1 || find("she", lstatement) == end+1)
+              response += " anyone?";
+            else  response += " anything?";
+          }
+        }
       }
       else
         response = answer[x%answer.length]; // if no question word, give a "yes" or "no" answer
@@ -242,7 +260,7 @@ public class Magpie
     else
       response = statementConversion(lstatement); // replies to declarative sentences with special conversion rules
     
-    if (!userName.equals("") && x%7 == 0) // addresses you by name sometimes.
+    if (!userName.equals("") && x%7 == 0 && find("Nice to meet you", lstatement) != 0) // addresses you by name sometimes.
       response = response.substring(0, response.length()-1) + ", " + userName + response.substring(response.length()-1, response.length());
     
     response = contract(response); // puts contractions in the response
@@ -252,7 +270,7 @@ public class Magpie
     
     if (nameInquire > 0)  nameInquire--; // gradually forgets asking about your name
     long startTime = System.currentTimeMillis();
-    while (System.currentTimeMillis() < startTime + response.length()*20) {}
+    while (System.currentTimeMillis() < startTime + response.length()*50) {}
     return response;
   }
   
@@ -298,17 +316,19 @@ public class Magpie
         newName = newName.substring(i+1);
     newName = newName.trim();
     newName = newName.substring(0,1).toUpperCase() + newName.substring(1); // capitalizes name
-    if (!userName.equals("") && !userName.equals(newName)) // expresses confusion if you change your name
-      response = "I thought your name was " + userName + ".";
-    else
-      response = "Nice to meet you. My name is Smitty Werbenjagermanjensen.";
     
-    if (newName.equalsIgnoreCase("James Bond")) // responds to specific names
+    if (newName.equalsIgnoreCase("James Bond") || newName.equalsIgnoreCase("Bond")) // responds to specific names
       newName = "Agent 007";
     if (newName.equalsIgnoreCase("Darth Vader"))
       newName = "my lord";
     if (newName.equalsIgnoreCase("Yoda") || newName.equalsIgnoreCase("Master Yoda"))
       newName = "master";
+    
+    if (!userName.equals("") && !userName.equals(newName)) // expresses confusion if you change your name
+      response = "I thought your name was " + userName + ".";
+    else
+      response = "Nice to meet you, " + newName + ". My name is Smitty Werbenjagermanjensen.";
+
     if (newName.equalsIgnoreCase("Justin") || newName.equalsIgnoreCase("Justin Kunimune") || newName.equalsIgnoreCase("Nitsuj"))
     {
       response = "Oh my goodness; I've heard such amazing things about you, sir! It is so good to finally meet you!";
@@ -325,7 +345,7 @@ public class Magpie
     String newStatement = ""; // new statement that is gradually constructed from original statement
     for (int i = 0; i < statement.length();) // cycles through statement
     {
-      if (!letterCheck(statement.substring(i))) // if symbol, it stays the same
+      if (!letterCheck(statement.substring(i, i+1))) // if symbol, it stays the same
       {
         newStatement += statement.substring(i, i+1);
         i ++;
@@ -345,17 +365,17 @@ public class Magpie
         newStatement += "are";
         i += 2;
       }
-      else if (find("you", statement.substring(i)) == 0) // you depends on whether there is a verb after it
+      else if (find("you", statement.substring(i)) == 0) // you depends on whether there is a verb before it
       {
-        boolean subjective = false;
+        boolean objective = false;
         for (String v: auxVerbs) // checks all verbs and auxiliary verbs and past tenses to see if they are the next word
-          subjective = subjective || (i < statement.length()-4-v.length() && statement.substring(i+4, i+4+v.length()).equals(v));
+          objective = objective || find(v, newStatement) >= 0;
         for (String v: verbs)
-          subjective = subjective || (i < statement.length()-4-v.length() && statement.substring(i+4, i+4+v.length()).equals(v));
+          objective = objective || find(v, newStatement) >= 0;
         for (String v: verbs)
-          subjective = subjective || (i < statement.length()-4-pastTense(v).length() && statement.substring(i+4, i+4+pastTense(v).length()).equals(pastTense(v)));
-        if (subjective)  newStatement += "i"; // if any verb was after it, the you goes to I
-        else             newStatement += "me"; // otherwise, it goes to me
+          objective = objective || find(v, newStatement) >= 0;
+        if (objective)  newStatement += "me"; // if any verb was after it, the you goes to I
+        else            newStatement += "i"; // otherwise, it goes to me
         i += 3;
       }
       else if (find("my", statement.substring(i)) == 0) // my -> your
@@ -393,13 +413,16 @@ public class Magpie
         newStatement += "am";
         i += 3;
       }
-      else // if there is no name, just add letters until you hit the end of the word
+      else // if there is no pronoun, just add letters until you hit the end of the word
       {
-        while (letterCheck(statement.substring(i)))
+        while (i < statement.length() && letterCheck(statement.substring(i, i+1)))
         {
           newStatement += statement.substring(i, i+1);
           i ++;
         }
+        if (i < statement.length())
+          newStatement += statement.substring(i, i+1);
+        i ++;
       }
     }
     
@@ -510,6 +533,10 @@ public class Magpie
       return "lost";
     if (word.equals("get"))
       return "got";
+    if (word.equals("give"))
+      return "gave";
+    if (word.equals("make"))
+      return "made";
     else if (word.substring(word.length()-2).equals("et"))
       return word;
     else if (word.substring(word.length()-3).equals("ead"))
@@ -530,6 +557,8 @@ public class Magpie
       return word.substring(0, word.length()-3) + "ood";
     else if (word.length() >= 3 && word.substring(word.length()-3).equals("ite"))
       return word.substring(0, word.length()-3) + "ote";
+    else if (word.length() >= 3 && word.substring(word.length()-3).equals("ind"))
+      return word.substring(0, word.length()-3) + "ound";
     else if (word.length() >= 2 && word.substring(word.length()-2).equals("un"))
       return word.substring(0, word.length()-2) + "an";
     else if (word.length() >= 2 && word.substring(word.length()-2).equals("in"))
@@ -555,6 +584,17 @@ public class Magpie
   
   private String plural(String word) // same thing for plural
   {
+    if (word.equals("am") || word.equals("be") || word.equals("are")) // exceptions are all auxiliary
+      return "is";
+    if (word.equals("were"))
+      return "was";
+    if (word.equals("do"))
+      return "does";
+    for (String v: auxVerbs) // if it is auxiliary, then the plural is probably itself
+    {
+      if (word.equals(v))
+        return v;
+    }
     if (word.substring(word.length()-1).equals("f"))
       return word.substring(0, word.length()-1) + "ves";
     else if (word.substring(word.length()-2).equals("ay"))
@@ -588,6 +628,8 @@ public class Magpie
       statement = statement.substring(0, find("i'm", statement)) + "i am" + statement.substring(find("i'm", statement)+3);
     while (find("it's", statement) >= 0)
       statement = statement.substring(0, find("it's", statement)) + "it is" + statement.substring(find("it's", statement)+4);
+    while (find("name's", statement) >= 0)
+      statement = statement.substring(0, find("name's", statement)) + "name is" + statement.substring(find("name's", statement)+6);
     while (find("ain't", statement) >= 0)
     {
       if (find("ain't", statement) > 1 && statement.substring(find("ain't", statement)-2).equals("i")) // ain't becomes a variety of verbs based on the previous word
@@ -676,6 +718,59 @@ public class Magpie
   
   private String commaSplice(String statement) // simplifies compound sentences
   {
-    return statement;
+    if (statement.length() < 1)
+      return "";
+    int clausecount = 0;
+    for (int i = 0; i < statement.length(); i ++)
+      if (!letterCheck(statement.substring(i, i+1)) && !statement.substring(i, i+1).equals(" ") && !statement.substring(i, i+1).equals("'"))
+        clausecount ++; // counts punctuation marks
+    
+    String[] clause = new String[clausecount]; // makes an array of clauses
+    
+    for (int c = 0; c < clausecount; c ++)
+    {
+      clause[c] = "";
+      
+      for (int i = 0; i < statement.length(); i ++) // copies clauses into corresponding array items
+      {
+        if (!letterCheck(statement.substring(i, i+1)) && !statement.substring(i, i+1).equals(" ") && !statement.substring(i, i+1).equals("'")) // spaces and apostraphes don't count as punctuation
+        {
+          clause[c] += statement.substring(i, i+1);
+          statement = statement.substring(i+1);
+          i = statement.length();
+        }
+        else
+          clause[c] += statement.substring(i, i+1);
+      }
+      
+      clause[c] = clause[c].trim(); // trims them all
+    }
+    
+    for (int i = 0; i < clause.length && specialCondition(clause); i ++) // eliminates clauses one-by-one until one is eliminated
+      for (String p: prepojunctions)
+        if (find(p, clause[i]) == 0) // if it starst with a preposition or conjunction
+          clause[i] = ""; // it is a dependent clause
+    
+    for (int i = 0; i < clause.length && specialCondition(clause); i ++) // in case there still are clauses left, it eliminates more with a different strategy
+      if (!findVerb(clause[i])) // if it has no verb
+        clause[i] = ""; // it is a dependent clause
+
+    for (int i = clause.length-1; i >= 0; i --) // returns the last one that has not been eliminated
+      if (!clause[i].equals(""))
+        return clause[i];
+    
+    return "This statement should be unreachable. If the computer responds to this, then there is an error.";
+  }
+  
+
+  private boolean specialCondition(String[] clause) // a special condition that tells the previous method whether to continue eliminating clauses
+  {
+    int y = 0;
+    for (String c: clause)
+      if (!c.equals(""))
+        y ++;
+    if (y == 1)
+      return false;
+    return true;
   }
 }
