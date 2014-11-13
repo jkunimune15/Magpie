@@ -14,7 +14,7 @@ public class JustinMagpie
 {
   private int x; // randomizes some stuff
     
-  private int nameInquire = 0; // remembers if it has asked you your name recently
+  private int nameInquire = -1; // remembers if it has asked you your name recently
   
   private String userName = "";
   
@@ -44,6 +44,8 @@ public class JustinMagpie
   
   private String[] prepojunctions = {"for", "and", "nor", "but", "or", "yet", "so", "if", "because", "since", "also", "before", "after", "with", "in",
     "to", "though", "then"}; // list of prepositions + conjunctions
+  
+  private String[] interjections = {"oh", "wow", "woo", "hmmm", "hmm", "hm", "mm-hmm", "dang", "well", "great scott", "grape scotch", "hey"}; // list of interjections
   
   
   
@@ -101,7 +103,7 @@ public class JustinMagpie
     else if (find("my name", lstatement)>=0) // tells you the computer's name
       response = "My name is Smitty Werbenjagermanjensen.";
       
-    else if (userName == "" && Math.random() < .5 && nameInquire == 0)
+    else if (userName == "" && Math.random() < .3 && nameInquire == -1)
     {
       response = "I don't think I caught your name."; // randomly asks you your name
       nameInquire = 2;
@@ -509,8 +511,12 @@ public class JustinMagpie
             return "Since when does " + statement.substring(0, find(plural(v), statement)) + v + statement.substring(find(plural(v), statement)+plural(v).length(), statement.length()-1) + "?";
         }
         break;
-    }    
-    return reply[x%reply.length]; // if no verb is found (or a 1/6 chance triggers), just return a basic response
+    }
+    
+    for (String i: interjections)
+      if (statement.substring(0, statement.length()-1).equals(i))
+        return interjections[x%interjections.length];
+    return reply[x%reply.length]; // if no verb or interjection is found (or a 1/6 chance triggers), just return a basic response
   }
   
   

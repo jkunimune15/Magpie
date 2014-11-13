@@ -5,7 +5,7 @@ import java.util.Random;
  * by Devon Lee
  */
 
-public class NovedMagpie {
+public class Magpie {
   long startTime = System.currentTimeMillis();
   long replyTime = 0;
   long timeElapsed = 0;
@@ -237,12 +237,12 @@ public class NovedMagpie {
     previousResponse = response;
     response = spellingError(response);   // Adds a possible spelling error to the computer's response
     statementCount++;
-  /*  replyTime = System.currentTimeMillis();
+    replyTime = System.currentTimeMillis();
     timeElapsed = replyTime - startTime;
     secondsElapsed = (int)(timeElapsed/1000)%60;
     minutesElapsed = (int)(timeElapsed/60000)%60;
-    hoursElapsed = (minutesElapsed/60);*/
-    return response /*+ "\n*Recieved " + hoursElapsed + ":" + minutesElapsed + ":" + secondsElapsed + ": after chat began*"*/;
+    hoursElapsed = (minutesElapsed/60);
+    return response + "\n*Recieved " + hoursElapsed + ":" + minutesElapsed + ":" + secondsElapsed + ": after chat began*";
   }
   
   private String spellingError(String correctResponse) {
