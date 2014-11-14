@@ -12,7 +12,7 @@ public class JustinMagpie // by Justin Kunimune
   
   private String[] greeting = {"Hello, let's talk.", "Hello.", "Hi.", "Hey.", "Hillo.", "Greetings, human.", "Hi. How are you?"}; // list of basic responses
   
-  private String[] lonelyMessage = {"I can hear you breathing.", "Hello?", "Is anyone there?", "Are you still there?", "Hello hello?", "Yoo-hoo"};
+  private String[] lonelyMessage = {"I can hear you breathing.", "Hello?", "Is anyone there?", "Are you still there?", "Hello hello?", "Yoo-hoo."};
   
   private String[] confused = {"You just said that.", "Is that not what you just said?", "I heard you the first time.", "What are you, a broken record?",
     "Are you a computer?", "That is really annoying.", "Please don't copy yourself.", "I know; you just said that."};
