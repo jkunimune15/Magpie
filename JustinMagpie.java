@@ -1,16 +1,4 @@
-/**
- * A program to carry on conversations with a human user.
- * This is the initial version that:  
- * <ul><li>
- *       Uses indexOf to find strings
- * </li><li>
- *       Handles responding to simple words and phrases 
- * </li></ul>
- * This version uses a nested if to handle default responses.
- * @author Laurie White
- * @version April 2012
- */
-public class JustinMagpie
+public class JustinMagpie // by Justin Kunimune
 {
   private int x; // randomizes some stuff
     
@@ -40,7 +28,7 @@ public class JustinMagpie
     "That's interesting. Tell me more.", "I'm sorry, I didn't hear that; I totally spaced out right there.", "Really?", "So?"};
   
   private String[] answer = {"Wait, what was the question?", "Yes.", "Aboslutely.", "Absolutely...not!", "Yep.", "Totally.", "I believe so.",
-    "I doubt it.", "I don't know. For a computer, I am not very smart.", "Yeah.", "Why do you want to know?", "Probably.", "I don't know.", "No.",
+    "I doubt it.", "I don't know. Consult the internet.", "Yeah.", "Why do you want to know?", "Probably.", "I don't know.", "No.",
     "Maybe.","Possibly.", "That depends. Who's asking?", "Affirmative.", "Negative.", "That's right.", "I think so."};
   
   private String[] confirmation = {"Okay.", "On it.", "Will do!", "Yes, ma'am, I mean, sir, I mean boss, I mean puba!", "Sure.", "Alright.",
@@ -54,7 +42,7 @@ public class JustinMagpie
     "open", "close", "let", "know", "lead", "see", "shut", "think", "buy", "go", "forgo", "tell", "say", "win", "lose", "care", "sell", "realize",
     "realise", "get", "dislike", "fart", "build", "dominate", "chill", "swallow", "explore", "surf", "give", "suck", "respond", "fix", "make", "meet",
     "find", "thank", "excuse", "puncuated", "respond", "answer", "evade", "walk", "dodge", "amaze", "disappoint", "discover", "turn", "change", "wait",
-    "flip", "wear", "tear", "care", "quit", "stop", "forget", "copy", "start", "talk", "speak"}; // list of regular verbs
+    "flip", "wear", "tear", "care", "quit", "stop", "forget", "copy", "start", "talk", "speak", "consult", "resent"}; // list of regular verbs
   
   private String[] prepojunctions = {"for", "and", "nor", "but", "or", "yet", "so", "if", "because", "since", "also", "before", "after", "with", "in",
     "to", "though", "then"}; // list of prepositions + conjunctions
@@ -62,26 +50,17 @@ public class JustinMagpie
   private String[] interjections = {"oh", "o", "wow", "woo", "hmmm", "hmm", "hm", "mm-hmm", "dang", "well", "great scott", "grape scotch", "hey", "woah", "yay",
     "ah", "alas", "eh", "er", "ouch", "uh"}; // list of interjections
   
-  private String[] emoticons = {":)", ":D", ":P", "B)", "<3", ":3", "}:|", ":\\", ":|", ":(", ";)", ";D"};
+  private String[] emoticons = {":)", ":D", ":P", "B)", "<3", ":3", "}:|", ":\\", ":|", ":(", ";)", ";D", "=D", "XD"};
   
   
   
-  /**
-   * Get a default greeting  
-   * @return a greeting
-   */
+  
   public String getGreeting()
   {
     return greeting[x%greeting.length]; // returns a random greeting from above
   }
   
-  /**
-   * Gives a response to a user statement
-   * 
-   * @param statement
-   *            the user statement
-   * @return a response based on the rules given
-   */
+  
   public String getResponse(String statement)
   {
     x += (int)(Math.random()*2+2); // increments x at a fairly random rate
@@ -205,10 +184,10 @@ public class JustinMagpie
     else if (find("star wars", lstatement)>=0)
       response = "I love Star Wars! Star Wars is the best movie saga ever created.";
     
-    else if (find("mr. landgraf", lstatement)>=0)
+    else if (find("landgraf", lstatement)>=0)
       response = "Mr. Landgraf? He sounds cool.";
     
-    else if (find("mr. kiang", lstatement)>=0)
+    else if (find("kiang", lstatement)>=0)
       response = "Mr. Kiang sounds like a good teacher.";
     
     else if (find("cat", lstatement)>=0)
@@ -220,8 +199,16 @@ public class JustinMagpie
     else if (find("mother", lstatement)>=0 || find("father", lstatement)>=0 || find("sister", lstatement)>=0 || find("brother", lstatement)>=0)
       response = "Tell me more about your family.";
     
+    else if (!userName.toLowerCase().equals("") && find(userName.toLowerCase(), lstatement)>=0)
+      response = "Why so narcicistic?";
+    
     else if (statement.substring(statement.length()-1).equals("?")) // answers interrogative sentences
     {
+      boolean yesorno = false; // the for loop needs to be separated for this to work
+      for (String v: auxVerbs) // if the question starts with an aux verb, it is a yes or no question
+        if (find(v, lstatement) == 0)
+          yesorno = true;
+      
       if (lstatement.equals("how are me?")) // responds to basic questions
         response = "I am fine. Thank you for asking.";
       else if (lstatement.equals("how do me do?"))
@@ -234,24 +221,28 @@ public class JustinMagpie
         response = "The time is "+(System.currentTimeMillis()/3600000)+":"+System.currentTimeMillis()/60000%60;
       else if (lstatement.equals("what is pi?"))
         response = "Delicious.";
+      else if (lstatement.equals("what is a magpie?"))
+        response = "A computer program designed to sound like a human. Most of them are pretty bad.";
       else if (lstatement.equals("what do me do when life gives me lemons?"))
         response = "Don't make lemonade. Get mad! I don't want your damn lemons; what am I supposed to do with these? Demand to see life's manager! Make life rue the day it tried to give Smitty Werbenjagermanjensen lemons. Do you know who I am? I am number one!";
       else if (find("life, the universe, and the ultimate question", lstatement)>=0 || find("life the universe and the ultimate question", lstatement)>=0)
         response = "42!";
       else if (find("what are me", lstatement) == 0)
         response = "I am a human.";
-      else if (find("what", lstatement) == 0) // responds to different question words with default responses
-        response = "Chicken butt.";
-      else if (find("who", lstatement) == 0)
-        response = "You're mom.";
-      else if (find("why", lstatement) == 0)
-        response = "'cause can.";
-      else if (find("when", lstatement) == 0)
-        response = "Get-yourself-a-watch o'clock.";
-      else if (find("where", lstatement) == 0)
-        response = "A long time ago in a galaxy far far away.";
-      else if (find("which", lstatement) == 0)
-        response = "The blue one.";
+      else if (yesorno)
+        response = answer[x%answer.length];
+      else if (find("what", lstatement) >= 0) // responds to different question words with default responses
+        response = lstatement.substring(0, find("what", lstatement)) + "chicken butt.";
+      else if (find("who", lstatement) >= 0)
+        response = lstatement.substring(0, find("who", lstatement)) + "your mom.";
+      else if (find("why", lstatement) >= 0)
+        response = lstatement.substring(0, find("why", lstatement)) + "'cause can.";
+      else if (find("when", lstatement) >= 0)
+        response = lstatement.substring(0, find("when", lstatement)) + "get-yourself-a-watch o'clock.";
+      else if (find("where", lstatement) >= 0)
+        response = lstatement.substring(0, find("where", lstatement)) + "a long time ago in a galaxy far far away.";
+      else if (find("which", lstatement) >= 0)
+        response = lstatement.substring(0, find("which", lstatement)) + "the blue one.";
       else if (find("how many", lstatement) == 0)
         response = "Over nine-thousand!";
       else if (find("how much", lstatement) == 0)
@@ -297,8 +288,10 @@ public class JustinMagpie
     
     if (!userName.equals("") && x%7 == 0 && find("Nice to meet you", response) != 0 && find("Oh my goodness;", response) != 0) // addresses you by name sometimes.
       response = response.substring(0, response.length()-1) + ", " + userName + response.substring(response.length()-1, response.length());
-    if (response.equals(lastResponse) && find("I said",response) != 0)
+    if (response.equalsIgnoreCase(lastResponse) && find("I said",response) != 0) // puts "i said" at the beginning of repeats
       response = "I said, " + response;
+    if (response.equalsIgnoreCase(statement) && find("Oh, look, now I'm a parrot",response) < 0) // comments if it copies you
+      response = response + "Oh, look, now I'm the parrot.";
     response = contract(response); // puts contractions in the response
     if (response.length() > 0)
       response = response.substring(0,1).toUpperCase() + response.substring(1); // Capitalizes response
@@ -330,7 +323,7 @@ public class JustinMagpie
   
   private boolean letterCheck(String character)
   {
-    return character.compareTo(" ") > 32 && character.compareTo(" ") < 91; // uses character.compareTo(" ") to determine whether it is a letter or symbol
+    return (character.compareTo(" ") > 32 && character.compareTo(" ") < 91) || (character.compareTo(" ") > 15 && character.compareTo(" ") < 26); // uses character.compareTo(" ") to determine whether it is a letter or symbol
   }
   
   

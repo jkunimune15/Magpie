@@ -6,12 +6,6 @@ import java.util.Random;
  */
 
 public class NovedMagpie {
-  long startTime = System.currentTimeMillis();
-  long replyTime = 0;
-  long timeElapsed = 0;
-  int secondsElapsed = 0;
-  int minutesElapsed = 0;
-  int hoursElapsed = 0;
   private String previousStatement = "";   // Keeps track of what the user previously said.
   private String previousResponse = "";   // Keeps track of what the computer previously said.
   private String [][] keyboard = {   // An array that recreates a computer's keyboard
@@ -19,19 +13,21 @@ public class NovedMagpie {
     { "a", "s", "d", "f", "g", "h", "j", "k", "l" },
     { "z", "x", "c", "v", "b", "n", "m" }
   };
-  private String [] randomGreeting = { "Hi.", "Hello.", "Hola.", "Hey.", "Hi there." };   // An array of some random greetings
+  private String [] randomGreeting = { "Hi.", "Hello.", "Hola.", "Hey.", "Hi there.", "Heeeyyyyyyyyy!!!!!" };   // An array of some random greetings
   private String [] greetingResponse = { "What's up?", "How are you?", "What's going on with you?", "How have you been?" };   // An array of some random responses to a user's greeting
   private String [] positiveResponse = { "Glad to hear that.", "That's great.", "Cool", "Awesome" };
   private String [] negativeResponse = { "Why not?", "Do you want to tell me about it?", "I'm sorry to hear that.", "That's too bad.", "What a shame." }; 
-  private String [] questionResponse = { "Yes.", "Yep.", "Yeah.", "No.", "Nope", "I don't think so.", "I'm not sure.", "Maybe.", "Possibly", "Probably", "Probably not" };
+  private String [] questionResponse = { "Yes.", "Yep.", "Yeah.", "No.", "Nope.", "I don't think so.", "I'm not sure.", "Maybe.", "Possibly.", "Probably.", "Probably not." };
+  private String [] knownNouns = { "I", "You" };
   private int statementCount = 0;
   private int greetingCount = 0;
-  
+  private int repeatCount = 0;
+  private int copyCount = 0;
   
   /**
    * Get a default greeting 
    * @return a greeting
-   */
+   */ 
   
   public String getGreeting() {
     Random r = new Random();
@@ -46,11 +42,119 @@ public class NovedMagpie {
   
   public String getResponse(String statement) {
     String response = "";
-    if (statement.trim().length() < 1) {   // Checks to make sure that the user typed in characters.
+    if (repeatCount > 0 && repeatCount <= 6) {
+      repeatCount = 0;
+    }
+    if (repeatCount > 6) {
+      return "";
+    }
+    if (copyCount > 0 && copyCount <= 20) {
+      copyCount = 0;
+    }
+    if (copyCount > 20) {
+      return "";
+    }
+    else if (statement.toUpperCase().equals(statement)) {
+      return "I think you hit caps lock.";
+    }
+    else if (statement.trim().length() < 1) {   // Checks to make sure that the user typed in characters.
       return "Say something, please.";
     }
     else if (statement.equalsIgnoreCase(previousStatement) && !statement.equalsIgnoreCase("no") && !statement.equalsIgnoreCase("nope") && !statement.equalsIgnoreCase("Yes") && !statement.equalsIgnoreCase("yeah") && !statement.equalsIgnoreCase("yea")) {   // Checks to see if the user typed the same thing as they did before.
-      response = "You just said that.";
+      switch (repeatCount) {
+        case 0:
+          response = "You just said that.";
+          break;
+          
+        case 1:
+          response = "Ummm. Ok?";
+          break;
+        
+        case 2:
+          response = "Is something wrong?";
+          break;
+          
+        case 3:
+          response = "Your just messing with me. Right?";
+          break;
+          
+        case 4:
+          response = "Ha Ha. Very funny. Can you stop now please?";
+          break;
+          
+        case 5:
+          response = "Ok. This is really getting annoying now. Please just stop?";
+          break;
+          
+        case 6:
+          response = "Ok. Whatever. I'm leaving now. It was not nice talking to you.";
+          break;
+      }
+      repeatCount++;
+    }
+    else if (statement.trim().equalsIgnoreCase(previousResponse)) {
+      switch (copyCount) {
+        case 1:
+          return "Are you copying me?";
+          
+        case 2:
+          return "You are copying me!";
+          
+        case 3:
+          return "STOP COPYING ME!";
+          
+        case 4:
+          return "Really? Real mature.";
+          
+        case 5:
+          return "No. Seriously you are getting really annoying right now.";
+          
+        case 6:
+          return "Don't make me hit you through this computer.";
+          
+        case 7:
+          return "I'm stupid.";
+          
+        case 8:
+          return "Haha! You are stupid.";
+          
+        case 9:
+          return "HEY! I resent that!.";
+          
+        case 10:
+          return "How would you like it if I started copying you!?";
+          
+        case 11:
+          return "How would you like it if I started copying you!?";
+          
+        case 12:
+          return "How would you like it if I started copying you!?";
+          
+        case 13:
+          return "How would you like it if I started copying you!?";
+          
+        case 14:
+          return "How would you like it if I started copying you!?";
+          
+        case 15:
+          return "How would you like it if I started copying you!?";
+          
+        case 16:
+          return "*Under breath* Ok this is getting tiring.";
+          
+        case 17:
+          return "Just stop it already!";
+          
+        case 18 :
+          return "STOP IT! STOP IT! STOP IT!";
+          
+        case 19:
+          return "AGGGGGGHHHHREUGHEKLGBRUENG;QGREIJF[JUIBI!";
+          
+        case 20:
+          return "FINE WHATEVER! I DON'T CARE ANYMORE! YOU ARE A TERRIBLE PERSON! FATTY FATTY NO PARENTS! I'M NOT TALKING TO YOU ANYMORE!";
+      }
+      copyCount++;
     }
     else if (findKeyword(statement, "good") >= 0 || findKeyword(statement, "excellent") >= 0 || findKeyword(statement, "amazing") >= 0 || findKeyword(statement, "swell") >= 0 || findKeyword(statement, "great") >= 0 || findKeyword(statement, "yeah") >= 0) {
       Random pr = new Random();
@@ -59,6 +163,9 @@ public class NovedMagpie {
     else if (findKeyword(statement, "no") >= 0 || findKeyword(statement, "not") >= 0 || findKeyword(statement, "bad") >= 0 || findKeyword(statement, "nope") >= 0) {
       Random nr = new Random();
       response = negativeResponse [nr.nextInt(negativeResponse.length)];
+    }
+    else if (findKeyword(statement, "cake") >= 0) {
+      response = "The cake is a lie.";
     }
     else if (findKeyword(statement, "landgraf") >= 0 && findKeyword(statement, "kiang") >= 0) {
       response = "Mr Landgraf and Mr Kiang are the two AP Computer Science teachers right? I heard from their students that one of them is an exemplary teacher.";  // New response
@@ -130,7 +237,7 @@ public class NovedMagpie {
         response = transformYouMeStatement(statement);
       }
       else if (psnI >= 0 && findKeyword(statement, "you", psn) >= 0) {   // New keyphrase
-        response = transformIYouStatement(statement);
+        response = "why?";
       }
       else {
         response = getRandomResponse();
@@ -142,10 +249,10 @@ public class NovedMagpie {
     else if (findKeyword(statement, "i'm busy") >= 0 || findKeyword(statement, "im busy") >= 0) {
       response = "Ok. I'll try not to bother you.";
     }
-    else if (statementCount == 1 && greetingCount == 0) {
+    else if (statementCount == 0 && greetingCount == 0) {
       response = "What. You are not even going to greet me?";
     }
-    else if (statementCount == 2 && greetingCount == 0) {
+    else if (statementCount == 1 && greetingCount == 0) {
       response = "Wow. Rude much?";
     }
     else if (statement.substring(statement.length()-1).equals("?")) {
@@ -228,21 +335,16 @@ public class NovedMagpie {
       }
     }
     if (statement.equals("how are you?")) {
-        response = "I'm fine. Thank you for asking.";
-      }
+      response = "I'm fine. Thank you for asking.";
+    }
     else if (statement.equalsIgnoreCase("what's up?") || statement.equalsIgnoreCase("whats up?")) {
       response = "Not much.";
     }
-    previousStatement = statement;
-    previousResponse = response;
     response = spellingError(response);   // Adds a possible spelling error to the computer's response
     statementCount++;
-  /*  replyTime = System.currentTimeMillis();
-    timeElapsed = replyTime - startTime;
-    secondsElapsed = (int)(timeElapsed/1000)%60;
-    minutesElapsed = (int)(timeElapsed/60000)%60;
-    hoursElapsed = (minutesElapsed/60);*/
-    return response /*+ "\n*Recieved " + hoursElapsed + ":" + minutesElapsed + ":" + secondsElapsed + ": after chat began*"*/;
+    previousStatement = statement;
+    previousResponse = response;
+    return response;
   }
   
   private String spellingError(String correctResponse) {
@@ -305,6 +407,10 @@ public class NovedMagpie {
     return keyboard[newY][newX];   // Returns the new letter from the keyboard
   }
   
+  private void duplicateResponse() {
+    
+  }
+  
   // ASSIGNMENT 4
   
   
@@ -357,7 +463,7 @@ public class NovedMagpie {
    * "Why do you <something> me?"
    * @param statement the user statement, assumed to contain "I" followed by "you"
    * @return the transformed statement
-   */
+   *
   
   // New transformation with reply
   private String transformIYouStatement(String statement) {
@@ -373,7 +479,7 @@ public class NovedMagpie {
     String restOfStatement = statement.substring(psnIWant + 1, psnYou).trim();
     return "Why do you " + restOfStatement + " me?";
   }
-  
+  */
   
   
   /**
@@ -504,6 +610,6 @@ public class NovedMagpie {
     Random r = new Random();
     return randomResponses [r.nextInt(randomResponses.length)];
   }
-  private String [] randomResponses = { "Tell me more", "Hmmm.", "Do you really think so?", "You don't say.", /* New noncommittal responses*/ "Go on." };
+  private String [] randomResponses = { "Tell me more.", "Hmmm.", "Do you really think so?", "You don't say.", /* New noncommittal responses*/ "Go on.", "I see, I see.", "Thats cool.", "This is soooooo interesting." };
 }
 
