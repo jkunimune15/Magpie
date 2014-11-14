@@ -1,13 +1,5 @@
-/**
- * A simple class to run the Magpie class.
- * @author Laurie White
- * @version April 2012
- */
 public class MagpieConversation
 {
-  /**
-   * Create a Magpie, give it user input, and print its replies.
-   */
   public static void main(String[] args)
   {
     JustinMagpie maggie1 = new JustinMagpie();

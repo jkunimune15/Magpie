@@ -15,14 +15,14 @@ public class JustinMagpie // by Justin Kunimune
   private String[] lonelyMessage = {"I can hear you breathing.", "Hello?", "Is anyone there?", "Are you still there?", "Hello hello?", "Yoo-hoo"};
   
   private String[] confused = {"You just said that.", "Is that not what you just said?", "I heard you the first time.", "What are you, a broken record?",
-    "Are you a computer?", "That is really annoying.", "Please don't copy yourself."};
+    "Are you a computer?", "That is really annoying.", "Please don't copy yourself.", "I know; you just said that."};
   
   private String[] annoyed = {"Real mature.", "Stop copying me!", "Stop that!", "Quit it!", "Stop that this instant!", "Cut that out!",
-    "What are you, a parrot?", "I'm just going to stop talking.", "I'm not talking to a parrot.", "", "", "", "", "Would you cut that out?",
-    "Don't you dare copy me again.", "I'm stupid.", "I'm a big fat stupid-head", "I like to eat poop.", "How would you like it if I started copying you?",
+    "What are you, a parrot?", "If you're going to repeat what I say, then I'm going to just stop talking.", "I'm not talking to a parrot.", "", "", "",
+    "", "Would you cut that out?", "Don't you dare copy me again.", "I'm stupid.", "How would you like it if I started copying you?",
     "How would you like it if I started copying you?", "How would you like it if I started copying you?", "How would you like it if I started copying you?",
     "How would you like it if I started copying you?", "How would you like it if I started copying you?", "How would you like it if I started copying you?",
-    "How would you like it if I started copying you?", "How would you like it if I started copying you?", "Stop parroting me."};
+    "How would you like it if I started copying you?", "How would you like it if I started copying you?", "Stop parroting me.", "I know what I said"};
   
   private String[] reply = {"I see.", "Is that so?", "Soo desu ka? Oops, sorry, wrong language. Is that so?", "Tell me about it.", "Uh huh.", "Huh.",
     "That's interesting. Tell me more.", "I'm sorry, I didn't hear that; I totally spaced out right there.", "Really?", "So?"};
@@ -48,13 +48,13 @@ public class JustinMagpie // by Justin Kunimune
     "to", "though", "then"}; // list of prepositions + conjunctions
   
   private String[] interjections = {"oh", "o", "wow", "woo", "hmmm", "hmm", "hm", "mm-hmm", "dang", "well", "great scott", "grape scotch", "hey", "woah", "yay",
-    "ah", "alas", "eh", "er", "ouch", "uh"}; // list of interjections
+    "ah", "alas", "eh", "er", "ouch", "uh", "okay"}; // list of interjections
   
   private String[] properNouns = {"Justin", "Nitsuj", "Noved", "Devon", "Mr", "Mrs", "Ms", "Kiang", "Landgraf", "Smitty", "Werbenjagermanjensen", "God",
     "Jesus", "Darth", "Vader", "Aniken", "Skywalker", "Luke", "James", "Bond", "Jon", "John", "Bob", "Susan", "Jeff", "Star Wars", "McDonalds",
     "Spongebob", "Squarepants", "I", "Billy", "Douglas", "Ted", "Minecraft", "Steve", "Obi", "Wan"};
   
-  private String[] emoticons = {":)", ":D", ":P", "B)", "<3", ":3", "}:|", ":\\", ":|", ":(", ";)", ";D", "=D", "XD"};
+  private String[] emoticons = {":)", ":D", ":P", "B)", "<3", ":3", "}:D", ":\\", ":|", ":(", ";)", ";D", "=D", "XD"};
   
   
   
@@ -77,7 +77,7 @@ public class JustinMagpie // by Justin Kunimune
     lstatement = commaSplice(lstatement);
     lstatement = unContract(lstatement); // uncontracts twice to make sure it didn't miss anything
     
-    if (lstatement.length() < 1)
+    if (statement.length() < 1)
       response = lonelyMessage[x%lonelyMessage.length]; // gives a certain random reply if box is empty
     
     else if (letterCheck(statement.substring(statement.length()-1))) // checks last character to see if it is punctuation or a letter
@@ -222,7 +222,7 @@ public class JustinMagpie // by Justin Kunimune
       else if (lstatement.equals("what is up?"))
         response = "The opposite of down. Just kidding. Not much.";
       else if (lstatement.equals("what time is it?"))
-        response = "The time is "+(System.currentTimeMillis()/3600000)+":"+System.currentTimeMillis()/60000%60;
+        response = currentTime();
       else if (lstatement.equals("what is pi?"))
         response = "Delicious.";
       else if (lstatement.equals("what is a magpie?"))
@@ -237,14 +237,24 @@ public class JustinMagpie // by Justin Kunimune
         response = answer[x%answer.length];
       else if (find("what", lstatement) >= 0) // responds to different question words with default responses
         response = lstatement.substring(0, find("what", lstatement)) + "chicken butt.";
+      else if (find("whatever", lstatement) >= 0)
+        response = lstatement.substring(0, find("whatever", lstatement)) + "chicken butt.";
       else if (find("who", lstatement) >= 0)
         response = lstatement.substring(0, find("who", lstatement)) + "your mom.";
+      else if (find("whom", lstatement) >= 0)
+        response = lstatement.substring(0, find("whom", lstatement)) + "your mom.";
       else if (find("why", lstatement) >= 0)
         response = lstatement.substring(0, find("why", lstatement)) + "'cause can.";
+      else if (find("wherefore", lstatement) >= 0)
+        response = lstatement.substring(0, find("wherefore", lstatement)) + "'cause can.";
       else if (find("when", lstatement) >= 0)
         response = lstatement.substring(0, find("when", lstatement)) + "get-yourself-a-watch o'clock.";
+      else if (find("what time", lstatement) >= 0)
+        response = lstatement.substring(0, find("what time", lstatement)) + "get-yourself-a-watch o'clock.";
       else if (find("where", lstatement) >= 0)
         response = lstatement.substring(0, find("where", lstatement)) + "a long time ago in a galaxy far far away.";
+      else if (find("wherever", lstatement) >= 0)
+        response = lstatement.substring(0, find("wherever", lstatement)) + "a long time ago in a galaxy far far away.";
       else if (find("which", lstatement) >= 0)
         response = lstatement.substring(0, find("which", lstatement)) + "the blue one.";
       else if (find("how many", lstatement) == 0)
@@ -294,8 +304,8 @@ public class JustinMagpie // by Justin Kunimune
       response = response.substring(0, response.length()-1) + ", " + userName + response.substring(response.length()-1, response.length());
     if (response.equalsIgnoreCase(lastResponse) && find("I said",response) != 0) // puts "i said" at the beginning of repeats
       response = "I said, " + response;
-    if (response.equalsIgnoreCase(statement) && find("Oh, look, now I'm a parrot",response) < 0) // comments if it copies you
-      response = response + "Oh, look, now I'm the parrot.";
+    if (response.trim().equalsIgnoreCase(statement.trim()) && find(" Oh, look, now I'm a parrot",response) < 0) // comments if it copies you
+      response = response + "Oh, look, now I'm a parrot.";
     response = contract(response); // puts contractions in the response
     if (response.length() > 0)
       response = response.substring(0,1).toUpperCase() + response.substring(1); // Capitalizes response
@@ -355,6 +365,9 @@ public class JustinMagpie // by Justin Kunimune
         newName = newName.substring(i+1);
     newName = newName.trim();
     newName = newName.substring(0,1).toUpperCase() + newName.substring(1); // capitalizes name
+    for (int i = 1; i < newName.length()-1; i ++)
+      if (newName.substring(i, i+1).equals(" "))
+        newName = newName.substring(0, i+1) + newName.substring(i+1, i+2).toUpperCase() + newName.substring(i+2);
     
     if (newName.equalsIgnoreCase("James Bond") || newName.equalsIgnoreCase("Bond")) // responds to specific names
       newName = "Agent 007";
@@ -437,6 +450,16 @@ public class JustinMagpie // by Justin Kunimune
       else if (find("yours", statement.substring(i)) == 0) // yours -> mine
       {
         newStatement += "mine";
+        i += 5;
+      }
+      else if (find("that", statement.substring(i)) == 0) // yours -> mine
+      {
+        newStatement += "this";
+        i += 4;
+      }
+      else if (find("this", statement.substring(i)) == 0) // yours -> mine
+      {
+        newStatement += "that";
         i += 5;
       }
       else if (find("was", statement.substring(i)) == 0 && find("you", newStatement) >= 0) // "was" only changes if there is a "you" before it.
@@ -684,6 +707,8 @@ public class JustinMagpie // by Justin Kunimune
       statement = statement.substring(0, find("it's", statement)) + "it is" + statement.substring(find("it's", statement)+4);
     while (find("name's", statement) >= 0)
       statement = statement.substring(0, find("name's", statement)) + "name is" + statement.substring(find("name's", statement)+6);
+    while (find("'cause", statement) >= 0)
+      statement = statement.substring(0, find("'cause", statement)) + "because" + statement.substring(find("'cause", statement)+6);
     while (find("ain't", statement) >= 0)
     {
       if (find("ain't", statement) > 1 && statement.substring(find("ain't", statement)-2).equals("i")) // ain't becomes a variety of verbs based on the previous word
@@ -814,12 +839,20 @@ public class JustinMagpie // by Justin Kunimune
     for (int i = 0; i < clause.length && specialCondition(clause); i ++) // in case there still are clauses left, it eliminates more with a different strategy
       if (!findVerb(clause[i])) // if it has no verb
         clause[i] = ""; // it is a dependent clause
-
-    for (int i = clause.length-1; i >= 0; i --) // returns the last one that has not been eliminated
-      if (!clause[i].equals(""))
-        return clause[i];
     
-    return "This statement should be unreachable. If the computer responds to this, then there is an error.";
+    String indClause = "";
+    for (String c: clause) // returns the last one that has not been eliminated
+      if (!c.equals(""))
+        indClause = c;
+    
+    for (String p: prepojunctions) // takes prepojunctions off the beginning 
+      if (find(p, indClause) == 0)
+        indClause = indClause.substring(p.length());
+    
+    while (find("though", indClause) >= 0)
+      indClause = indClause.substring(0, find("though", indClause)) + indClause.substring(find("though", indClause)+7);
+    
+    return indClause;
   }
   
 
@@ -832,5 +865,15 @@ public class JustinMagpie // by Justin Kunimune
     if (y == 1)
       return false;
     return true;
+  }
+  
+  
+  private String currentTime()
+  {
+    long time = System.currentTimeMillis();
+    if (time/60000%60 < 10)
+      return "Right now, it's "+time/3600000%12+":0"+time/60000%60+".";
+    else
+      return "Right now, it's "+time/3600000%12+":"+time/60000%60+".";
   }
 }
