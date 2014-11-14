@@ -42,13 +42,13 @@ public class JustinMagpie // by Justin Kunimune
     "open", "close", "let", "know", "lead", "see", "shut", "think", "buy", "go", "forgo", "tell", "say", "win", "lose", "care", "sell", "realize",
     "realise", "get", "dislike", "fart", "build", "dominate", "chill", "swallow", "explore", "surf", "give", "suck", "respond", "fix", "make", "meet",
     "find", "thank", "excuse", "puncuated", "respond", "answer", "evade", "walk", "dodge", "amaze", "disappoint", "discover", "turn", "change", "wait",
-    "flip", "wear", "tear", "care", "quit", "stop", "forget", "copy", "start", "talk", "speak", "consult", "resent"}; // list of regular verbs
+    "flip", "wear", "tear", "care", "quit", "stop", "forget", "copy", "start", "talk", "speak", "consult", "resent", "omit"}; // list of regular verbs
   
   private String[] prepojunctions = {"for", "and", "nor", "but", "or", "yet", "so", "if", "because", "since", "also", "before", "after", "with", "in",
     "to", "though", "then"}; // list of prepositions + conjunctions
   
   private String[] interjections = {"oh", "o", "wow", "woo", "hmmm", "hmm", "hm", "mm-hmm", "dang", "well", "great scott", "grape scotch", "hey", "woah", "yay",
-    "ah", "alas", "eh", "er", "ouch", "uh", "okay"}; // list of interjections
+    "ah", "alas", "eh", "er", "ouch", "uh", "okay", "sure", "yes", "yeah", "yea"}; // list of interjections
   
   private String[] properNouns = {"Justin", "Nitsuj", "Noved", "Devon", "Mr", "Mrs", "Ms", "Kiang", "Landgraf", "Smitty", "Werbenjagermanjensen", "God",
     "Jesus", "Darth", "Vader", "Aniken", "Skywalker", "Luke", "James", "Bond", "Jon", "John", "Bob", "Susan", "Jeff", "Star Wars", "McDonalds",
@@ -305,7 +305,7 @@ public class JustinMagpie // by Justin Kunimune
     if (response.equalsIgnoreCase(lastResponse) && find("I said",response) != 0) // puts "i said" at the beginning of repeats
       response = "I said, " + response;
     if (response.trim().equalsIgnoreCase(statement.trim()) && find(" Oh, look, now I'm a parrot",response) < 0) // comments if it copies you
-      response = response + "Oh, look, now I'm a parrot.";
+      response = response + " Oh, look, now I'm a parrot.";
     response = contract(response); // puts contractions in the response
     if (response.length() > 0)
       response = response.substring(0,1).toUpperCase() + response.substring(1); // Capitalizes response
@@ -313,13 +313,14 @@ public class JustinMagpie // by Justin Kunimune
       while (find(n.toLowerCase(), response) >= 0)
         response = response.substring(0,find(n.toLowerCase(), response)) + n + response.substring(find(n.toLowerCase(), response)+n.length()); // capitalizes all proper nouns
     if (Math.random() < .2)
-      response = response + " " + emoticons[x%emoticons.length];
+      response = response + " " + emoticons[x%emoticons.length]; // puts in random emoticons
     
     lastStatement = statement;
     lastResponse = response;
     
     long startTime = System.currentTimeMillis();
     while (System.currentTimeMillis() < startTime + response.length()*50) {} // realistically delays typing
+    
     return response;
   }
   
@@ -460,7 +461,7 @@ public class JustinMagpie // by Justin Kunimune
       else if (find("this", statement.substring(i)) == 0) // yours -> mine
       {
         newStatement += "that";
-        i += 5;
+        i += 4;
       }
       else if (find("was", statement.substring(i)) == 0 && find("you", newStatement) >= 0) // "was" only changes if there is a "you" before it.
       {
@@ -500,77 +501,77 @@ public class JustinMagpie // by Justin Kunimune
     {
       case 1: // "Why is that true?"
         for (String v: auxVerbs) // if there is an auxiliary verb
-          if (find(v, statement) >= 0) // make it Why + verb + (statement-verb)
+          if (find(v, statement) > 0) // make it Why + verb + (statement-verb)
             return "Why " + v + " " + statement.substring(0, find(v, statement)-1) + statement.substring(find(v, statement)+v.length(), statement.length()-1) + "?";
         for (String v: verbs) // if there is a nonauxiliary verb
         {
-          if (find(v, statement) >= 0) // make it Why + do/did/does(depending on tense) + presenttenseverb
+          if (find(v, statement) > 0) // make it Why + do/did/does(depending on tense) + presenttenseverb
             return "Why do " + statement.substring(0, statement.length()-1) + "?";
-          if (find(pastTense(v), statement) >= 0)
+          if (find(pastTense(v), statement) > 0)
             return "Why did " + statement.substring(0, find(pastTense(v), statement)) + v + statement.substring(find(pastTense(v), statement)+pastTense(v).length(), statement.length()-1) + "?";
-          if (find(plural(v), statement) >= 0)
+          if (find(plural(v), statement) > 0)
             return "Why does " + statement.substring(0, find(plural(v), statement)) + v + statement.substring(find(plural(v), statement)+plural(v).length(), statement.length()-1) + "?";
         }
           break;
       case 2: // "Is that true? Really?"
         for (String v: auxVerbs) // pretty similar to case 1
-          if (find(v, statement) >= 0)
+          if (find(v, statement) > 0)
             return v + " " + statement.substring(0, find(v, statement)-1) + statement.substring(find(v, statement)+v.length(), statement.length()-1) + "? Really?";
         for (String v: verbs)
         {
-          if (find(v, statement) >= 0)
+          if (find(v, statement) > 0)
             return "Do " + statement.substring(0, statement.length()-1) + "? Really?";
-          if (find(pastTense(v), statement) >= 0)
+          if (find(pastTense(v), statement) > 0)
             return "Did " + statement.substring(0, find(pastTense(v), statement)) + v + statement.substring(find(pastTense(v), statement)+pastTense(v).length(), statement.length()-1) + "? Really?";
-          if (find(plural(v), statement) >= 0)
+          if (find(plural(v), statement) > 0)
             return "Does " + statement.substring(0, find(plural(v), statement)) + v + statement.substring(find(plural(v), statement)+plural(v).length(), statement.length()-1) + "? Really?";
         }
         break;
       case 3: // "I did not realize that was true."
         for (String v: auxVerbs) // if there is an auxiliary verb
-          if (find(v, statement) >= 0) // make it I did not know + past tense sentence
+          if (find(v, statement) > 0) // make it I did not know + past tense sentence
             return "I did not realize " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length()-1) + ".";
         for (String v: verbs) // same goes for regular verbs if there is no auxiliary verb
         {
-          if (find(v, statement) >= 0)
+          if (find(v, statement) > 0)
             return "I did not realize " + statement.substring(0, find(v, statement)-1) + " " + pastTense(v) + statement.substring(find(v, statement)+v.length(), statement.length()-1) + ".";
-          if (find(pastTense(v), statement) >= 0)
+          if (find(pastTense(v), statement) > 0)
             return "I did not realize " + statement.substring(0, statement.length()-1) + ".";
-          if (find(plural(v), statement) >= 0)
+          if (find(plural(v), statement) > 0)
             return "I did not realize " + statement.substring(0, find(plural(v), statement)-1) + " " + pastTense(v) + statement.substring(find(plural(v), statement)+v.length(), statement.length()-1) + ".";
         }
         break;
       case 4: // tell me more about how that is true.
         for (String v: auxVerbs) // if there is an auxiliary verb
-          if (find(v, statement) >= 0) // make it I did not know + past tense sentence (the verb doesn't matter - it just matters if there is a verb)
+          if (find(v, statement) > 0) // make it I did not know + past tense sentence (the verb doesn't matter - it just matters if there is a verb)
             return "What makes you think " + statement.substring(0, statement.length()-1) + "?";
         for (String v: verbs) // same goes for regular verbs if there is no auxiliary verb
         {
-          if (find(v, statement) >= 0)
+          if (find(v, statement) > 0)
             return "What makes you think " + statement.substring(0, statement.length()-1) + "?";
-          if (find(pastTense(v), statement) >= 0)
+          if (find(pastTense(v), statement) > 0)
             return "What makes you think " + statement.substring(0, statement.length()-1) + "?";
-          if (find(plural(v), statement) >= 0)
+          if (find(plural(v), statement) > 0)
             return "What makes you think " + statement.substring(0, statement.length()-1) + "?";
         }
       case 5: // "Since when is that true?"
         for (String v: auxVerbs) // same idea as cases 1 and 2
-          if (find(v, statement) >= 0)
+          if (find(v, statement) > 0)
             return "Since when " + v + " " + statement.substring(0, find(v, statement)-1) + statement.substring(find(v, statement)+v.length(), statement.length()-1) + "?";
         for (String v: verbs)
         {
-          if (find(v, statement) >= 0)
+          if (find(v, statement) > 0)
             return "Since when do " + statement.substring(0, statement.length()-1) + "?";
-          if (find(pastTense(v), statement) >= 0)
+          if (find(pastTense(v), statement) > 0)
             return "Since when did " + statement.substring(0, find(pastTense(v), statement)) + v + statement.substring(find(pastTense(v), statement)+pastTense(v).length(), statement.length()-1) + "?";
-          if (find(plural(v), statement) >= 0)
+          if (find(plural(v), statement) > 0)
             return "Since when does " + statement.substring(0, find(plural(v), statement)) + v + statement.substring(find(plural(v), statement)+plural(v).length(), statement.length()-1) + "?";
         }
         break;
     }
     
     for (String i: interjections)
-      if (statement.substring(0, statement.length()-1).equals(i)) // responds to an interjection with a certain response
+      if (statement.length() > 0 && statement.substring(0, statement.length()-1).equals(i)) // responds to an interjection with a certain response
         return "Yeah...";
     
     return reply[x%reply.length]; // if no verb or interjection is found (or a 1/6 chance triggers), just return a basic response
@@ -711,11 +712,11 @@ public class JustinMagpie // by Justin Kunimune
       statement = statement.substring(0, find("'cause", statement)) + "because" + statement.substring(find("'cause", statement)+6);
     while (find("ain't", statement) >= 0)
     {
-      if (find("ain't", statement) > 1 && statement.substring(find("ain't", statement)-2).equals("i")) // ain't becomes a variety of verbs based on the previous word
+      if (find("i", statement) == find("ain't", statement) - 2) // ain't becomes a variety of verbs based on the previous word
         statement = statement.substring(0, find("ain't", statement)) + "am not" + statement.substring(find("ain't", statement)+5);
-      else if (find("ain't", statement) > 3 && statement.substring(find("ain't", statement)-4).equals("you"))
+      else if (find("you", statement) == find("ain't", statement) - 4)
         statement = statement.substring(0, find("ain't", statement)) + "are not" + statement.substring(find("ain't", statement)+5);
-      else if (find("ain't", statement) > 1 && statement.substring(find("ain't", statement)-2).equals("s"))
+      else if (find("ain't", statement) >= 2 && statement.substring(find("ain't", statement)-2, find("ain't", statement)-1).equals("s"))
         statement = statement.substring(0, find("ain't", statement)) + "are not" + statement.substring(find("ain't", statement)+5);
       else
         statement = statement.substring(0, find("ain't", statement)) + "is not" + statement.substring(find("ain't", statement)+5);
@@ -765,15 +766,7 @@ public class JustinMagpie // by Justin Kunimune
       statement = statement.substring(0, find("it was", statement)) + "'twas" + statement.substring(find("it was", statement)+6);
     for (String v: auxVerbs)
       while (statement.indexOf(v+" not") >= 0)
-        statement = statement.substring(0, statement.indexOf(v+" not")) + v+"n't" + statement.substring(statement.indexOf(v+" not")+v.length()+4);
-    while (statement.indexOf("'ve") >= 0)
-      statement = statement.substring(0, statement.indexOf("'ve")) + " have" + statement.substring(statement.indexOf("'ve")+3); // 's usually only changes if there is an article after it
-    while (statement.indexOf(" is a ") >= 0)
-      statement = statement.substring(0, statement.indexOf(" is a ")) + "'s a " + statement.substring(statement.indexOf(" is a ")+6);
-    while (statement.indexOf(" is an ") >= 0)
-      statement = statement.substring(0, statement.indexOf(" is an ")) + "'s an " + statement.substring(statement.indexOf(" is an ")+7);
-    while (statement.indexOf(" is the ") >= 0)
-      statement = statement.substring(0, statement.indexOf(" is the ")) + "'s the " + statement.substring(statement.indexOf(" is the ")+8);
+        statement = statement.substring(0, find(v+" not", statement)) + v+"n't" + statement.substring(find(v+" not", statement)+v.length()+4);
     
     return statement;
   }
@@ -851,6 +844,8 @@ public class JustinMagpie // by Justin Kunimune
     
     while (find("though", indClause) >= 0)
       indClause = indClause.substring(0, find("though", indClause)) + indClause.substring(find("though", indClause)+7);
+    
+    indClause = indClause.trim();
     
     return indClause;
   }

@@ -22,7 +22,7 @@ public class JustinMagpie // by Justin Kunimune
     "", "Would you cut that out?", "Don't you dare copy me again.", "I'm stupid.", "How would you like it if I started copying you?",
     "How would you like it if I started copying you?", "How would you like it if I started copying you?", "How would you like it if I started copying you?",
     "How would you like it if I started copying you?", "How would you like it if I started copying you?", "How would you like it if I started copying you?",
-    "How would you like it if I started copying you?", "How would you like it if I started copying you?", "Stop parroting me.", "I know what I said"};
+    "How would you like it if I started copying you?", "How would you like it if I started copying you?", "Stop parroting me.", "I know what I said."};
   
   private String[] reply = {"I see.", "Is that so?", "Soo desu ka? Oops, sorry, wrong language. Is that so?", "Tell me about it.", "Uh huh.", "Huh.",
     "That's interesting. Tell me more.", "I'm sorry, I didn't hear that; I totally spaced out right there.", "Really?", "So?"};
