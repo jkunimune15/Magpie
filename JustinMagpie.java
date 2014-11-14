@@ -50,6 +50,10 @@ public class JustinMagpie // by Justin Kunimune
   private String[] interjections = {"oh", "o", "wow", "woo", "hmmm", "hmm", "hm", "mm-hmm", "dang", "well", "great scott", "grape scotch", "hey", "woah", "yay",
     "ah", "alas", "eh", "er", "ouch", "uh"}; // list of interjections
   
+  private String[] properNouns = {"Justin", "Nitsuj", "Noved", "Devon", "Mr", "Mrs", "Ms", "Kiang", "Landgraf", "Smitty", "Werbenjagermanjensen", "God",
+    "Jesus", "Darth", "Vader", "Aniken", "Skywalker", "Luke", "James", "Bond", "Jon", "John", "Bob", "Susan", "Jeff", "Star Wars", "McDonalds",
+    "Spongebob", "Squarepants", "I", "Billy", "Douglas", "Ted", "Minecraft", "Steve", "Obi", "Wan"};
+  
   private String[] emoticons = {":)", ":D", ":P", "B)", "<3", ":3", "}:|", ":\\", ":|", ":(", ";)", ";D", "=D", "XD"};
   
   
@@ -295,8 +299,9 @@ public class JustinMagpie // by Justin Kunimune
     response = contract(response); // puts contractions in the response
     if (response.length() > 0)
       response = response.substring(0,1).toUpperCase() + response.substring(1); // Capitalizes response
-    while (find("i", response) >= 0)
-      response = response.substring(0,find("i", response)) + "I" + response.substring(find("i", response)+1); // changes all i to I
+    for (String n: properNouns)
+      while (find(n.toLowerCase(), response) >= 0)
+        response = response.substring(0,find(n.toLowerCase(), response)) + n + response.substring(find(n.toLowerCase(), response)+n.length()); // capitalizes all proper nouns
     if (Math.random() < .2)
       response = response + " " + emoticons[x%emoticons.length];
     
