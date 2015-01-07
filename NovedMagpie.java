@@ -237,7 +237,7 @@ public class NovedMagpie {
     else if (findKeyword(statement, "thanks") >= 0 || findKeyword(statement, "thank you") >= 0) {   // New keywords and response
       response = "You are very welcome.";
     }
-    else if (findKeyword(statement, "hi") >= 0 || findKeyword(statement, "hello") >= 0 || findKeyword(statement, "aloha") >= 0 || findKeyword(statement, "hola") >= 0 || findKeyword(statement, "what's up") >= 0 || findKeyword(statement, "whats up") >= 0 || findKeyword(statement, "sup") >= 0 || findKeyword(statement, "hey") >= 0) {   // Checks for keywords indicating a greeting
+    else if (findKeyword(statement, "hi") >= 0 || findKeyword(statement, "hello") >= 0 || findKeyword(statement, "aloha") >= 0 || findKeyword(statement, "hola") >= 0 || findKeyword(statement, "what's up") >= 0 || findKeyword(statement, "whats up") >= 0 || findKeyword(statement, "sup") >= 0 || findKeyword(statement, "hey") >= 0 || findKeyword(statement, "how are you") >= 0) {   // Checks for keywords indicating a greeting
       if (greetingCount == 0) {   // Checks if the user has not greeted the computer before
         Random gr = new Random();
         response = greetingResponse [gr.nextInt(greetingResponse.length)];   // Returns a random greeting response
@@ -272,6 +272,9 @@ public class NovedMagpie {
       }
       else if (psnI >= 0 && findKeyword(statement, "you", psn) >= 0) {   // New keyphrase
         response = "why?";
+      }
+      else {
+        response = getRandomResponse();
       }
     }
     if (statement.equalsIgnoreCase("i don't like you") || statement.equalsIgnoreCase("i dont like you") || statement.equalsIgnoreCase("i dislike you") || statement.equalsIgnoreCase("i hate you")) {   // Checks for some generic putdowns toward the computer 
@@ -322,7 +325,7 @@ public class NovedMagpie {
         }
       }
       else if (findKeyword(statement, "what do you do when life gives you lemons") >= 0) {   // New question
-        response = "When life gives you lemons, donÕt make lemonade. Make life take the lemons back! Get mad! I donÕt want your damn lemons, what the hell am I supposed to do with these? Demand to see lifeÕs manager! Make life rue the day it thought it could give Meggan lemons! Do you know who I am? IÕm the man whoÕs gonna burn your house down! With the lemons! IÕm gonna get my engineers to invent a combustible lemon that burns your house down!";   // Appropriate Resoponse *PORTAL 2 REFERANCE*
+        response = "When life gives you lemons, donÍt make lemonade. Make life take the lemons back! Get mad! I donÍt want your damn lemons, what the hell am I supposed to do with these? Demand to see lifeÍs manager! Make life rue the day it thought it could give Meggan lemons! Do you know who I am? IÍm the man whoÍs gonna burn your house down! With the lemons! IÍm gonna get my engineers to invent a combustible lemon that burns your house down!";   // Appropriate Resoponse *PORTAL 2 REFERANCE*
       }
       else if (findKeyword(statement, "what are you") >= 0) {   // New question
         response = "I'm a person.";   // Appropriate Resoponse
@@ -386,7 +389,7 @@ public class NovedMagpie {
   
   private String spellingError(String correctResponse) {   // Possibly generates a random spelling error
     String newResponse = correctResponse;
-    int errorChance = (int)((Math.random()*(15)+1));   // Generates a random number between 1 and 15.
+    int errorChance = (int)((Math.random()*(20)+1));   // Generates a random number between 1 and 15.
     int errorCharacter = 0;
     if (errorChance == 1) {   // Checks if the errorChance is 1 and generates an error if it is.
       do {
