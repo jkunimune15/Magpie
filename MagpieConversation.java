@@ -11,8 +11,8 @@ public class MagpieConversation
     
     while (!statement.equalsIgnoreCase("bye."))
     {
-      if (turn)  System.out.print("\nMagpie 1: ");
-      else       System.out.print("\nMagpie 2: ");
+      if (turn)  System.out.print("\nNoved: ");
+      else       System.out.print("\nNitsuj: ");
       System.out.println(statement);
       startTime = System.currentTimeMillis();
       while (System.currentTimeMillis() < startTime + 2000) {}

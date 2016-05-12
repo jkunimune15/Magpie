@@ -5,6 +5,7 @@ public class JustinMagpie // by Justin Kunimune
   private double likeChance; // decides how often computer says "like" and "um" and "you know"
   private double umChance;
   private double yaknowChance;
+  private double emoticonChance;
     
   private int nameInquire = -1; // remembers if it has asked you your name recently
   
@@ -46,7 +47,8 @@ public class JustinMagpie // by Justin Kunimune
     "open", "close", "let", "know", "lead", "see", "shut", "think", "buy", "go", "forgo", "tell", "say", "win", "lose", "care", "sell", "realize",
     "realise", "get", "dislike", "fart", "build", "dominate", "chill", "swallow", "explore", "surf", "give", "suck", "respond", "fix", "make", "meet",
     "find", "thank", "excuse", "puncuated", "respond", "answer", "evade", "walk", "dodge", "amaze", "disappoint", "discover", "turn", "change", "wait",
-    "flip", "wear", "tear", "care", "quit", "stop", "forget", "copy", "start", "talk", "speak", "consult", "resent", "omit", "need", "come"}; // list of regular verbs
+    "flip", "wear", "tear", "care", "quit", "stop", "forget", "copy", "start", "talk", "speak", "consult", "resent", "omit", "need", "come", "take",
+    "use", "call", "try", "ask", "feel", "become", "leave"}; // list of regular verbs
   
   private String[] prepojunctions = {"for", "and", "nor", "but", "or", "yet", "so", "if", "because", "since", "also", "before", "after", "with", "in",
     "to", "though", "then"}; // list of prepositions + conjunctions
@@ -64,9 +66,6 @@ public class JustinMagpie // by Justin Kunimune
   
   
   public JustinMagpie() {
-    likeChance = Math.pow(Math.random(), 10);
-    umChance = Math.pow(Math.random(), 10);
-    yaknowChance = Math.pow(Math.random(), 20);
   }
   
   
@@ -93,6 +92,12 @@ public class JustinMagpie // by Justin Kunimune
     if (statement.length() < 1)
       response = lonelyMessage[x%lonelyMessage.length]; // gives a certain random reply if box is empty
     
+    else if (statement.equals(lastStatement))
+      response = confused[x%confused.length];
+    
+    else if (statement.equals(lastResponse))
+      response = annoyed[x%annoyed.length];
+    
     else if (letterCheck(statement.substring(statement.length()-1))) // checks last character to see if it is punctuation or a letter
       response = "You should really punctuate your sentences properly ";
     
@@ -104,12 +109,6 @@ public class JustinMagpie // by Justin Kunimune
     
     else if (find("not", lstatement) >= 0 && find("nothing", lstatement) > find("not", lstatement)) // corrects double negatives
       response = "I believe you mean \""+ lstatement.substring(0, find("nothing", lstatement)) + "anything" + lstatement.substring(find("nothing", lstatement)+7) + "\".";
-    
-    else if (statement.equals(lastStatement))
-      response = confused[x%confused.length];
-    
-    else if (statement.equals(lastResponse))
-      response = annoyed[x%annoyed.length];
     
     else if (find("name is", lstatement)>=0 && find("name is", lstatement)<lstatement.length()-9)
       response = nameUpdate(lstatement.substring(find("name is", lstatement)+8, lstatement.length()-1)); // if it sees anything about "name is", it will assume you are telling it its name.
@@ -309,19 +308,11 @@ public class JustinMagpie // by Justin Kunimune
         {
           if (find(pastTense(v), lstatement) == 4) // "how" has a different meaning
           {
-            response = "How "+plural(v); // so give a different response
-            if (find("you", lstatement) == end+1 || find("me", lstatement) == end+1 || find("they", lstatement) == end+1 ||
-                find("he", lstatement) == end+1 || find("she", lstatement) == end+1)
-              response += " anyone?"; // toggles anyone and anything depending on if it thinks the subject is a person
-            else  response += " anything?";
+            response = "Very carefully."; // so give a different response
           }
           if (find(v, lstatement) == 4) // same thing for present tense
           {
-            response = "How "+plural(v);
-            if (find("you", lstatement) == end+1 || find("me", lstatement) == end+1 || find("they", lstatement) == end+1 ||
-                find("he", lstatement) == end+1 || find("she", lstatement) == end+1)
-              response += " anyone?";
-            else  response += " anything?";
+            response = "Very carefully.";
           }
         }
       }
@@ -350,14 +341,14 @@ public class JustinMagpie // by Justin Kunimune
     for (String n: properNouns)
       while (find(n.toLowerCase(), response) >= 0)
         response = response.substring(0,find(n.toLowerCase(), response)) + n + response.substring(find(n.toLowerCase(), response)+n.length()); // capitalizes all proper nouns
-    if (Math.random() < .2)
+    if (Math.random() < emoticonChance)
       response = response + " " + emoticons[x%emoticons.length]; // puts in random emoticons
     
     lastStatement = statement;
     lastResponse = response;
     
     long startTime = System.currentTimeMillis();
-    while (System.currentTimeMillis() < startTime + response.length()*40) {} // realistically delays typing
+    while (System.currentTimeMillis() < startTime + response.length()*20) {} // realistically delays typing
     
     return response;
   }
@@ -417,8 +408,8 @@ public class JustinMagpie // by Justin Kunimune
     
     if (!userName.equals("") && !userName.equals(newName)) // expresses confusion if you change your name
       response = "I thought your name was " + userName + ".";
-    if (userName.equalsIgnoreCase(newName))
-      response = "I already knew that.";
+    else if (userName.equalsIgnoreCase(newName)) // unless you repeat your name
+      response = "You've already told me your name.";
     else
       response = "Nice to meet you, " + newName + ". My name is Smitty Werbenjagermanjensen.";
 
@@ -940,15 +931,25 @@ public class JustinMagpie // by Justin Kunimune
   
   
   private String likify(String statement) { // adds "like" and "um" to the statement
-    for (int i = statement.length()-1; i > 0; i --)
+    for (int i = statement.length()-1; i > 2; i --) {
       if (statement.substring(i-1,i).equals(" ")) { // if it sees fit, it will add like and um to spaces
-        if (Math.random() < umChance)
-          statement = statement.substring(0, i-1) + ", like," + statement.substring(i-1);
-        else if (Math.random() < likeChance)
-          statement = statement.substring(0, i-1) + ", um," + statement.substring(i-1);
+        if (letterCheck(statement.substring(i-2,i))) { // a letter followed by a space needs a comma
+          if (Math.random() < umChance)
+            statement = statement.substring(0, i-1) + ", like," + statement.substring(i-1);
+          else if (Math.random() < likeChance)
+            statement = statement.substring(0, i-1) + ", um," + statement.substring(i-1);
+        }
+        else { // punctuation does not need a comma
+          if (Math.random() < umChance)
+            statement = statement.substring(0, i-1) + " like," + statement.substring(i-1);
+          else if (Math.random() < likeChance)
+            statement = statement.substring(0, i-1) + " um," + statement.substring(i-1);
+        }
       }
+    }
     if (statement.length() > 0 && statement.substring(statement.length()-1).equals(".") && Math.random() < yaknowChance) // if the sentence ends in a period, it will also sometimes add "you know?" to the end
       statement = statement.substring(0, statement.length()-1) + ", you know?";
+        
     return statement;
   }
   
