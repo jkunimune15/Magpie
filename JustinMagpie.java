@@ -66,6 +66,10 @@ public class JustinMagpie // by Justin Kunimune
   
   
   public JustinMagpie() {
+    likeChance = Math.pow(Math.random(), 10)*.2;
+    umChance = Math.pow(Math.random(), 10)*.2;
+    yaknowChance = Math.pow(Math.random(), 10)*.2;
+    emoticonChance = Math.pow(Math.random(), 10)*.2;
   }
   
   
